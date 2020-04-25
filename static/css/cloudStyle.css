@@ -1,0 +1,50 @@
+#wrap{
+    padding-left: 2vw;
+    padding-top:5vh;
+}
+
+#filewindow{
+    padding-left: 16vw;
+}
+
+.dwn{
+    color: #0070ac;
+}
+
+.bin{
+    color: #df6603;
+}
+
+.mv{
+    color: #1e8d02;
+}
+
+.del{
+    color: rgb(187, 0, 0);
+}
+
+#progress{
+    width: 50vw;
+}
+
+button:active {
+    outline: none;
+    border: none;
+}
+    
+button:focus {outline:0;}
+
+.spinning{
+    animation-name: spin-animation;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes spin-animation{
+    from{transform: rotate(0deg);}
+    to{transform: rotate(359deg);}
+}
+
+.mdc-drawer{
+    float: left;
+}
