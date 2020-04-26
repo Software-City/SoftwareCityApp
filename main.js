@@ -1,0 +1,151 @@
+const electron = require('electron')
+const {autoUpdater} = require('electron-updater');
+const sethandle = require("./settingshandler.js")
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow
+const Menu = electron.Menu
+const Tray = electron.Tray
+const path = require('path')
+const url = require('url')
+
+require("./renderer/menu.js")
+var quit = false;
+const iswin32 = process.platform === "win32"
+
+let win
+sethandle.init_settings()
+
+function createWindow () {
+  win = new BrowserWindow({
+    width: 1280,
+    height: 720,
+    minWidth: 1280,
+    minHeight: 720,
+    webPreferences: {
+      nodeIntegration: true,
+      webviewTag: true
+    }
+  });
+  if(iswin32){
+    makeTray("win32");
+    win.setIcon(__dirname + '/static/logos/logo.ico');
+  }else{
+    makeTray("unix");
+    win.setIcon(__dirname + '/static/logos/logo.png')
+  }
+  require("dns").lookup("software-city.org", function(err, addr) {
+    if (err) {
+      win.loadFile('templates/offline.html');
+    } else {
+      require('dns').lookupService(addr, 80, function(err) {
+        if (err) {
+          win.loadFile('templates/offline.html');
+        } else {
+          win.loadURL(url.format({
+            pathname: path.join(__dirname, 'templates/login.html'),
+            protocol: 'file:',
+            slashes: true
+          }));
+        }
+      });
+    }
+  });
+  win.addListener("close", (ev)=>{
+    if(sethandle.getVal("systemtray")){
+      if(!quit){ev.preventDefault();win.hide()}else{app.quit()}
+    }else{
+      app.quit()
+    }
+  });
+  win.loadFile('templates/pageload.html');
+  try {
+    autoUpdater.checkForUpdates();
+  } catch (error) {
+    alert(error)
+  }
+}
+app.whenReady().then(createWindow)
+
+app.on('window-all-closed', (ev) => {
+  app.quit();
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow()
+  }
+})
+
+var hidden = false;
+function makeTray(dist){
+  if(dist=="win32"){
+    tray = new Tray(__dirname + '/static/logos/logo.ico')
+  }else{
+    tray = new Tray(__dirname + '/static/logos/logo.png')
+  }
+  tray.setToolTip('Software City App')
+  tray.setContextMenu(Menu.buildFromTemplate([{
+      label: 'Hide/Show Window',
+      click: () => {
+          if(hidden){win.show(); hidden=false;}
+          else{win.hide(); hidden=true;}
+      },
+  }, {
+      type: 'separator'
+  }, {
+      label: 'Exit',
+      click: () => {
+          win.destroy()
+          quit = true;
+          app.quit()
+      },
+  }]))
+  tray.on('double-click', () => {
+      win.show()
+  })
+}
+
+
+//-------------------------------------------------------------------
+// Auto updates
+//-------------------------------------------------------------------
+const sendStatusToWindow = (text) => {
+  if (win) {
+    win.webContents.send('updatemessage', text);
+  }
+};
+
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
+});
+autoUpdater.on('update-available', info => {
+  sendStatusToWindow('Update available.');
+  if (sethandle.getVal("autoupdate")){
+    win.loadFile('templates/update.html');
+  }
+});
+autoUpdater.on('update-not-available', info => {
+  sendStatusToWindow('Update not available.');
+});
+autoUpdater.on('error', err => {
+  sendStatusToWindow(`Error in auto-updater: ${err.toString()}`);
+});
+autoUpdater.on('download-progress', progressObj => {
+  sendStatusToWindow(
+    ["downloading", `Download speed: ${progressObj.bytesPerSecond} - Downloaded ${progressObj.percent}% (${progressObj.transferred} + '/' + ${progressObj.total} + )`]
+  );
+});
+autoUpdater.on('update-downloaded', info => {
+  sendStatusToWindow('Update downloaded; will install now');
+});
+
+autoUpdater.on('update-downloaded', info => {
+  if (sethandle.getVal("autoupdate")){
+    autoUpdater.quitAndInstall();
+  }else{
+    if(confirm("Do you want to install the latest update?")){
+      autoUpdater.quitAndInstall();
+    }
+  }
+  
+});
