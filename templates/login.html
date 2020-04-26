@@ -1,0 +1,147 @@
+<style>
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+* {
+    font-family: 'Roboto', sans-serif;
+    padding: 0;
+    margin: 0;
+    user-select: none;
+}
+body{
+    background-color: #323232;
+}
+#content {
+    text-align: center;
+    padding-top: 20vh;
+}
+.resptext {
+    color: red;
+}
+#load{
+    margin-left: 48vw;
+    margin-top:45vh;
+}
+.inputs{
+    margin-left: 25vw;
+    width: 50vw;
+}
+</style>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css">
+        <script>let $ = require('jquery');</script>
+        <script>require('popper.js');</script>
+        <script>require('bootstrap');</script>
+    </head>
+    <body>
+        <div id="load" class="spinner-border"></div>
+        <div id="main" hidden>
+            <div id="content">
+                <h1>Log in</h1><br>
+                <div class="form-group inputs">
+                    <input id="enter-username" class="form-control" type="text" placeholder="Username" required>
+                    <br>
+                    <input id="enter-password" class="form-control" type="password" placeholder="Password" required>
+                </div>
+                <p id="resp", class="resptext"></p>
+                <br>
+                <!-- <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="remember-me">
+                    <label class="custom-control-label" for="remember-me">Remember me</label>
+                </div> -->
+                <br><br>
+                <button class="btn btn-success" id="login-confirm-button" onclick="login()">
+                    Login
+                </button>
+            </div>
+        </div>
+
+        <script src="./../settingshandler.js"></script>
+        <script>
+            function loadanim(bool){
+                var loadpart = document.getElementById("load");
+                var pagepart = document.getElementById("main");
+                if(bool){loadpart.hidden=false;pagepart.hidden=true;}
+                else{loadpart.hidden=true;pagepart.hidden=false;}
+            }
+            
+            if(getVal("loggedin")){loadanim(true);checklogin(auto=true);}
+            else{loadanim(false);}
+
+            function buf2hex(buffer) {
+                return Array.prototype.map.call(new Uint8Array(buffer), x => ('00' + x.toString(16)).slice(-2)).join('');
+            }
+            function hash (algo, str) {
+                var hash = crypto.subtle.digest("SHA-512", new TextEncoder().encode(str));
+                return hash;
+            }
+            function loaddash(){
+                window.location.href = "index.html"
+            }
+            function checklogin(auto=false){
+                const info = document.getElementById("resp");
+                if(getVal("loggedin") && auto){
+                    var username = getVal("credentials")[0];
+                    var password = getVal("credentials")[1];
+
+                    var request = new XMLHttpRequest();
+                    request.responseType = "json";
+                    request.open("GET",`https://interface.software-city.org/api?mode=apprest&data=check_login&user=${username}&pass=${password}`);
+                    request.addEventListener('load', function(event) {
+                        if (request.status >= 200 && request.status < 300) {
+                            if(request.response.resp){
+                                loaddash();
+                            }else{
+                                info.innerText = "Wrong username or password!"
+                            }
+                        } else {
+                            window.location.href = "offline.html"
+                        }
+                    });
+                    request.send();
+                }else{
+                    var username = document.getElementById("enter-username").value;
+                    var password = document.getElementById("enter-password").value;
+                    hash("SHA-512", password).then(function(e){
+                        var enc_passwd = buf2hex(e);
+                        var request = new XMLHttpRequest();
+                        request.responseType = "json";
+                        request.open("GET",`https://interface.software-city.org/api?mode=apprest&data=check_login&user=${username}&pass=${enc_passwd}`);
+                        request.addEventListener('load', function(event) {
+                        if (request.status >= 200 && request.status < 300) {
+                            if(request.response.resp){
+                                loadanim(true);
+                                // var remember = document.getElementById("remember-me").value;
+                                var remember = "on";
+                                if(remember=="on"){
+                                    setVal("loggedin", true);
+                                    setVal("credentials", [username, enc_passwd])
+                                }
+                                loaddash();
+                            }else{
+                                info.innerText = "Wrong username or password!"
+                            }
+                        } else {
+                            window.location.href = "offline.html"
+                        }
+                        });
+                        request.send();
+                    });
+                }
+                return;
+            }
+            function login(){
+                const info = document.getElementById("resp");
+                var username = document.getElementById("enter-username").value;
+                var password = document.getElementById("enter-password").value;
+                if(username!="" && password!=""){
+                    checklogin()
+                }else{
+                    info.innerText = "Please fill out all fields!"
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,149 @@
+<link rel="stylesheet" href="./../static/css/cloudStyle.css">
+
+<div class="modal" id="newfolderModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">New folder</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <span style="color: red;" id="newfolderinfo"></span>
+                <input type="text" class="form-control" placeholder="Folder name" id="foldernameinput">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="new_folder()">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="moveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Move Folder</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="movetofolderbtndr">
+                        Folder
+                    </button>
+                    <div class="dropdown-menu" id="movetofolderdr">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="movetonow();">Move</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="binModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Move File to Trash?</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                Continue? You can retrieve the file again!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-warning" onclick="movetobin();">Move to Trash</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="deletefileModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete file?</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                Do you really, really want to delete this file? It won't be recoverable!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="deleteforever();">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="overlay-wrapper"></div>
+<div id="wrap">
+    <aside class="mdc-drawer">
+        <div>
+            <h3>Folders</h3>
+            <h6>Main Folders</h6>
+        </div>
+        <div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a onclick="load('main')">
+                        <i class="material-icons" aria-hidden="true">folder_open</i>
+                        <span>Main Folder</span>
+                    </a>
+                </li>
+                <li>
+                    <a onclick="load('bin')">
+                        <i class="material-icons" aria-hidden="true">delete</i>
+                        <span>Trash</span>
+                    </a>
+                </li>
+                <hr>
+                <h6>Custom Folders</h6>
+                <span id="customfolders">
+
+                </span>
+                <hr>
+                <h6>Options</h6>
+                <a data-toggle="modal" data-target="#newfolderModal">
+                    <i class="material-icons" aria-hidden="true">create_new_folder</i>
+                    <span>New Folder</span>
+                </a>
+            </ul>
+        </div>
+    </aside>
+    <div id="filewindow">
+        <br>
+        <div id="upload_section">
+            <label>Upload </label> <label id="file_input_label">File</label><br>
+            <input type="file" class="btn" name="upload" id="file_input" oninput="input_filename();">
+            <button onclick="upload();" id="upload_btn" class="btn btn-primary">Upload</button>
+            <button class="btn btn-primary d-none" id="loading_btn" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Uploading...
+            </button>
+            <button type="button" id="cancel_btn" class="btn btn-secondary d-none">Cancel upload</button>
+            <br>
+            <div id="progress_wrapper" class="d-none">
+                <label id="progress_status"></label>
+                <div class="progress mb-3">
+                    <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            <div id="alert_wrapper"></div>
+            <br>
+        </div>
+        <span>Files in My Cloud:</span><br><span id="folderinfo"></span>
+        <div class="list-group"  id="wrapperlist">
+        </div>
+    </div>
+</div>
+<script>
+    var user = getVal("credentials")[0]
+    var url = `https://interface.software-city.org/${user}/cloud`;
+    var curr_folder = "main";
+</script>
+<script src="./../static/js/tools.js"></script>
+<script src="./../static/js/progressbar.js"></script>
+<script src="./../static/js/download.js"></script>
+<script src="./../static/js/cloud/cloud_funcs.js"></script>

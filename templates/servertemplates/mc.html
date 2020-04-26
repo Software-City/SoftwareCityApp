@@ -1,0 +1,111 @@
+<style>
+  .spinner{
+    margin-left: 40vw;
+    margin-top:10vh;
+}
+</style>
+<div id="partload" class="spinner-border spinner"></div>
+<div class="container" id="infosection" hidden>
+    <h2>Minecraft Server <span class="badge badge-secondary"><span id="online"></span>/<span id="max"></span></span><button class="btn" onclick="getdata();">Refresh</button></h2>
+    <p>Version: <span id="mcversion"></span></p>
+    <p>Port: 25565</p>
+    <p>Playerlist</p>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>Avatar</th>
+          <th>Nickname</th>
+          <th>uuid</th>
+        </tr>
+      </thead>
+      <tbody id="datasection">
+      </tbody>
+    </table>
+</div><br><br><hr><br><br>
+<div id="partload1" class="spinner-border spinner"></div>
+<div class="container" id="infosection1" hidden>
+  <h2>Minecraft Server (Modded)<span class="badge badge-secondary"><span id="online1"></span>/<span id="max1"></span></span><button class="btn" onclick="getdata1();">Refresh</button></h2>
+  <p>Version: <span id="mcversion1"></span></p>
+  <p>Port: 1337</p>
+  <p>Playerlist</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>Avatar</th>
+        <th>Nickname</th>
+        <th>uuid</th>
+      </tr>
+    </thead>
+    <tbody id="datasection1">
+    </tbody>
+  </table>
+</div>
+<script>
+  var loader = document.getElementById("partload")
+  var info = document.getElementById("infosection")
+  var data = document.getElementById("datasection")
+  var loader1 = document.getElementById("partload1")
+  var info1 = document.getElementById("infosection1")
+  var data1 = document.getElementById("datasection1")
+  var obj = 
+            `
+            <tr>
+              <td>{{id}}</td>
+              <td><img src="{{headurl}}" style="width:7%;"></td>
+              <td>{{name}}</td>
+              <td style="user-select: text;">{{uuid}}</td>
+            </tr>
+            `
+  function getdata(){
+    loader.hidden = false;
+    info.hidden = true;
+    var request = new XMLHttpRequest();
+    request.responseType = "json";
+    request.open("GET","https://interface.software-city.org/api?mode=apprest&data=get_mc");
+    request.addEventListener('load', function(event) {
+      if (request.status >= 200 && request.status < 300) {
+        document.getElementById("online").innerText = request.response.online;
+        document.getElementById("max").innerText = request.response.max;
+        document.getElementById("mcversion").innerText = request.response.version;
+        data.innerHTML = "";
+        var id = 1
+        for(x of request.response.players){
+          data.innerHTML += obj.replace("{{headurl}}", x.headurl).replace("{{name}}", x.name).replace("{{uuid}}", x.uuid).replace("{{id}}", id);
+          id += 1;
+        }
+      } else {
+          info.innerHTML = "Error getting data";
+      }
+      loader.hidden = true;
+      info.hidden = false;
+    });
+    request.send();
+  }getdata();
+  function getdata1(){
+    loader1.hidden = false;
+    info1.hidden = true;
+    var request = new XMLHttpRequest();
+    request.responseType = "json";
+    request.open("GET","https://interface.software-city.org/api?mode=apprest&data=get_moddedmc");
+    request.addEventListener('load', function(event) {
+      if (request.status >= 200 && request.status < 300) {
+        document.getElementById("online1").innerText = request.response.online;
+        document.getElementById("max1").innerText = request.response.max;
+        document.getElementById("mcversion1").innerText = request.response.version;
+        data1.innerHTML = "";
+        var id = 1
+        for(x of request.response.players){
+          data1.innerHTML += obj.replace("{{headurl}}", x.headurl).replace("{{name}}", x.name).replace("{{uuid}}", x.uuid).replace("{{id}}", id);
+          id += 1;
+        }
+      } else {
+          info.innerHTML = "Error getting data";
+      }
+      loader1.hidden = true;
+      info1.hidden = false;
+    });
+    request.send();
+  }getdata1();
+</script>

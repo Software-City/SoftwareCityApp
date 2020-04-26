@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Software City App</title>
+    <script>let $ = require('jquery');</script>
+    <script>require('popper.js');</script>
+    <script>require('bootstrap');</script>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+    <section id="settings"></section>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+      <a class="navbar-brand" href="#"><img src="./../static/logos/logo.ico" alt="Logo" style="width:40px;">&nbsp; Software City</a>
+      <div class="collapse navbar-collapse" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link sidebarclass" onclick="loadpage(this, 'browser.asp')">Webbrowser</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link sidebarclass" onclick="loadpage(this, 'profile.asp')">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link sidebarclass" onclick="loadpage(this, 'settings.asp')">Settings</a>
+          </li>    
+        </ul>
+      </div>  
+    </nav>
+    <div id="sidebar">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a class="nav-link sidebarclass" onclick="loadpage(this, 'dash.asp')">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link sidebarclass" onclick="loadpage(this, 'https://cdn.software-city.org/appcontent/eventpage/events.asp')">Events</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link sidebarclass" onclick="loadpage(this, 'chat.asp')">Chat</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link sidebarclass" onclick="loadpage(this, 'server.asp')">Servers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link sidebarclass" onclick="loadpage(this, 'cloud.asp')">Cloud</a>
+        </li>
+      </ul>
+    </div>
+    <div id="mainpage" class="container-fluid"> <div id="load" class="spinner-border text-light"></div></div>
+    <script>
+      function loadpage(btn, page){
+        var buts = document.getElementsByClassName("sidebarclass");
+        for(let e of buts){e.classList.remove("active")}
+        if(page.includes("https://")){
+          loadURL(page);
+        }else{
+          loadHTML(page);
+        }
+        btn.classList.add("active")
+      }
+    </script>
+    <script src="./../settingshandler.js"></script>
+    <script src="./../renderer/theme.js"></script>
+    <script src="./../renderer/pageloader.js"></script>
+    <script>
+      var start = getVal("defstartpage")
+      var elem = document.getElementsByClassName("sidebarclass")
+      switch(start){
+        case "Dashboard": loadpage(elem[3], "dash.asp");break;
+        case "Events": loadpage(elem[4], "https://cdn.software-city.org/appcontent/eventpage/events.asp");break;
+        case "Chat": loadpage(elem[5], "dash.asp");break;
+        case "Servers": loadpage(elem[6], "server.asp");break;
+        case "Cloud": loadpage(elem[7], "cloud.asp");break;
+        default: loadpage(elem[3], "dash.asp");
+      }
+    </script>
+  </body>
+</html>
