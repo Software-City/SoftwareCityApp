@@ -1,8 +1,10 @@
 {
   "productName": "Software City App",
+  "homepage": "https://software-city.org/",
+  "bugs": {"url": "https://github.com/Davis-Software/SoftwareCityApp/issues", "email": "support@software-city.org"},
   "author": {"name": "Software City Team", "email": "support@software-city.org", "url": "https://github.com/Davis-Software/SoftwareCityApp"},
   "name": "softwarecity_app",
-  "version": "0.3.3",
+  "version": "0.3.6",
   "description": "Software City App",
   "repository": "https://github.com/Davis-Software/SoftwareCityApp",
   "license": "MIT",
@@ -29,9 +31,11 @@
   },
   "build": {
     "appId": "org.software-city.app.desktopapp",
+    "afterPack": "./afterPackHook.js",
     "linux": {
-      "target": "deb",
-      "icon": "D:\\Bibliotheken\\Desktop\\Workspace\\SWC\\SWC_desktopapp\\dist-resources\\logo.png",
+      "target": "AppImage",
+      "icon": "/media/davis/Data/Temporär/dist-resources/265x265.png",
+      "category": "Utility",
       "publish": {
         "provider": "github",
         "publishAutoUpdate": true,

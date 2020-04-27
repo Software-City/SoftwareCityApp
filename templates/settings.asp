@@ -21,6 +21,7 @@
 
 
 <h3>General</h3>
+
 <h5>Theme</h5>
 <div class="dropdown">
   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -44,14 +45,23 @@ Default Page to show on startup
     <a class="dropdown-item" onclick="setVal('defstartpage', 'Cloud');update()">Cloud</a>
   </div>
 </div><br>
-<h5>Cache</h5>
-Cachesize: <span id="cachesize"></span><br>
-Size when empty: <= 2029 KB <br>
-<button onclick="$('#clearCaheModal').modal('show');" class="btn btn-warning">Clear</button> &nbsp; <button class="btn btn-primary disabled" onclick="">Open in Folder</button><br><br>
+
+
+<h5>Updates</h5>
+Current Version: <span id="version"></span><br>
 <div class="custom-control custom-switch">
   <input type="checkbox" class="custom-control-input" id="updatecheck" onclick="switchupdate()">
   <label class="custom-control-label" for="updatecheck">Autoupdate</label>
 </div>
+<br>
+
+
+<h5>Cache</h5>
+Cachesize: <span id="cachesize"></span><br>
+Size when empty: <= 2029 KB <br>
+<button onclick="$('#clearCaheModal').modal('show');" class="btn btn-warning">Clear</button> &nbsp; <button class="btn btn-primary disabled" onclick="">Open in Folder</button><br><br>
+
+<h5>Behavior</h5>
 <div class="custom-control custom-switch">
   <input type="checkbox" class="custom-control-input" id="systraycheck" onclick="switchtray()">
   <label class="custom-control-label" for="systraycheck">Minimize to Tray on close</label>
@@ -98,13 +108,16 @@ Size when empty: <= 2029 KB <br>
   </div>
 </div>
 
+<br><br>
+
 <script src="./../static/js/tools.js"></script>
 <script>
-  var remote = require('electron').remote; 
+  var remote = require('electron').remote;
   var win = remote.getCurrentWindow();
   var operator = win.webContents.session;
   var updatecheck = document.getElementById("updatecheck");
   var systrayobj = document.getElementById("systraycheck");
+  document.getElementById("version").innerText = remote.app.getVersion()
   updatecheck.checked = getVal("autoupdate");
   systrayobj.checked = getVal("systemtray");
   
@@ -116,6 +129,7 @@ Size when empty: <= 2029 KB <br>
   function switchtray(){
     setVal("systemtray", !getVal("systemtray"));
   }
+
   function update(){
     operator.getCacheSize().then(function(result){document.getElementById("cachesize").innerText = Math.round(result/(1024)) + " KB"})
     document.getElementById("currtheme").innerHTML = getVal("theme")
@@ -123,6 +137,8 @@ Size when empty: <= 2029 KB <br>
     document.getElementById("gendefpage").innerHTML = getVal("defstartpage")
     document.getElementById("clouddefaultpage").innerHTML = getVal("cloudstartpage")
   }update()
+
+
   function clearCache(){
     operator.clearCache().then(()=>{
       operator.clearAuthCache().then(()=>{
