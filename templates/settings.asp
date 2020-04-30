@@ -59,7 +59,7 @@ Current Version: <span id="version"></span><br>
 <h5>Cache</h5>
 Cachesize: <span id="cachesize"></span><br>
 Size when empty: <= 2029 KB <br>
-<button onclick="$('#clearCaheModal').modal('show');" class="btn btn-warning">Clear</button> &nbsp; <button class="btn btn-primary disabled" onclick="">Open in Folder</button><br><br>
+<button onclick="$('#clearCaheModal').modal('show');" class="btn btn-warning">Clear</button> &nbsp; <button class="btn btn-primary" onclick="openexplorer('cachedir');">Open in Folder</button><br><br>
 
 <h5>Behavior</h5>
 <div class="custom-control custom-switch">
@@ -67,7 +67,16 @@ Size when empty: <= 2029 KB <br>
   <label class="custom-control-label" for="systraycheck">Minimize to Tray on close</label>
 </div>
 <span>(Only win32 and kubuntu, kde neon, deepin, some others)</span>
+<br><br>
+
+
+<h5>Developement</h5>
+<div class="custom-control custom-switch">
+  <input type="checkbox" class="custom-control-input" id="devmodecheck" onclick="switchdevmode()">
+  <label class="custom-control-label" for="devmodecheck">Dev Mode</label>
+</div>
 <hr>
+<br>
 
 
 <h3>Dashboard</h3>
@@ -117,9 +126,11 @@ Size when empty: <= 2029 KB <br>
   var operator = win.webContents.session;
   var updatecheck = document.getElementById("updatecheck");
   var systrayobj = document.getElementById("systraycheck");
+  var devmodecheck = document.getElementById("devmodecheck");
   document.getElementById("version").innerText = remote.app.getVersion()
   updatecheck.checked = getVal("autoupdate");
   systrayobj.checked = getVal("systemtray");
+  devmodecheck.checked = getVal("devMode")
   
   function switchupdate(){
     setVal("autoupdate", !getVal("autoupdate"));
@@ -128,6 +139,9 @@ Size when empty: <= 2029 KB <br>
   }
   function switchtray(){
     setVal("systemtray", !getVal("systemtray"));
+  }
+  function switchdevmode(){
+    setVal("devMode", !getVal("devMode"));
   }
 
   function update(){
@@ -138,6 +152,15 @@ Size when empty: <= 2029 KB <br>
     document.getElementById("clouddefaultpage").innerHTML = getVal("cloudstartpage")
   }update()
 
+
+  function openexplorer(exp){
+    const {shell} = require('electron')
+    if(exp == "cachedir"){
+      shell.openItem(cachedir)
+    }else{
+
+    }
+  }
 
   function clearCache(){
     operator.clearCache().then(()=>{

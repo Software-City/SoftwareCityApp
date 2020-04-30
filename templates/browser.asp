@@ -12,6 +12,19 @@
         border-style: solid;
         border-color: gray;
     }
+    .spinning{
+        animation-name: spin-animation;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+    }
+    @keyframes spin-animation{
+        from{transform: rotate(0deg);}
+        to{transform: rotate(359deg);}
+    }
+    .btn:focus,.btn:active {
+        outline: none !important;
+        box-shadow: none !important;
+    }
 </style>
 
 <div class="modal" id="infoModal">
@@ -38,13 +51,43 @@
     <button id="refresh" class="btn material-icons" onclick="reloadView();" title="Refresh">refresh</button>
     <button id="home" class="btn material-icons" onclick="gohome();" title="SWC Home">home</button>
     <input type="text" class="form-control" placeholder="URL" id="url" onclick="this.select();">
-    <button id="home" class="btn material-icons" onclick="toggledevtools();" title="pen Dev-Tools">developer_board</button>
+    <button id="devtools" class="btn material-icons" onclick="toggledevtools();" title="Open Dev-Tools">developer_board</button>
+    <button id="clearHistory" class="btn material-icons" onclick="clearhist();" title="Clear all history">layers_clear</button>
 </nav>
-<!-- <iframe id="view" src="./browser/index.html"></iframe> -->
-<webview id="view" src="./browser/index.html" autosize="on"></webview>
+<webview id="view" src="./browser/index.html" autosize="on" allowpopups></webview>
 
 <script src="./../static/js/tools.js"></script>
 <script src="./browser/renderer.js"></script>
+<script src="./browser/menu.js"></script>
 <script>
-    // $("#infoModal").modal("show");
+    var webview = document.querySelector('webview');
+    var view = document.getElementById("view");
+    var urlbar = document.getElementById("url");
+    var refresh = document.getElementById("refresh");
+    var back = document.getElementById("back");
+    var forward = document.getElementById("forward");
+    function clearhist(){
+        webview.clearHistory();
+        view.src = "./browser/index.html";
+    }
+    webview.addEventListener('new-window', (e) => {
+        try {
+            e.preventDefault();
+            webview.loadURL(e.url);
+        } catch (error) {
+            alert(error);
+            view.src = "./browser/index.html";
+        }
+    });
+    webview.addEventListener('did-start-loading', () => {
+        urlbar.disabled = true;
+        refresh.classList.add("spinning");
+    });
+    webview.addEventListener('did-stop-loading', () => {
+        urlbar.disabled = false;
+        refresh.classList.remove("spinning");
+        if(webview.canGoBack()){back.disabled = false;}else{back.disabled = true;}
+        if(webview.canGoForward()){forward.disabled = false;}else{forward.disabled = true;}
+    });
+    view.addEventListener("contextmenu", (e) => {console.log(e)});
 </script>

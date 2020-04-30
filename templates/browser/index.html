@@ -47,8 +47,9 @@
         <script>
             var inp = document.getElementById("searchbar");
             var btn = document.getElementById("searchbtn");
-            function search(ev){
-                if(event.keyCode === 13){
+            function search(event){
+                console.log(event)
+                if(event.keyCode === 13 || event.type == "click"){
                     var search = inp.value;
                     if(search.includes("http://") || search.includes("https://")){
                         window.location.href = search;
@@ -57,8 +58,6 @@
                     }else{
                         if(search != ""){
                             window.location.href = `https://www.google.com/search?q=${search}`
-                        }else{
-                            window.location.href = window.location.href;
                         }
                     }
                 }

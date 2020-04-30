@@ -6,6 +6,7 @@ var tempfile;
 
 var settings;
 var tempdata;
+var cachedir;
 
 const settingsfile = "settings.json";
 const tempfilefile = "temp.json";
@@ -13,9 +14,11 @@ const tempfilefile = "temp.json";
 if(iswin32){
     setfile = require("os").homedir() + "/AppData/Roaming/Software\ City\ App/" + settingsfile;
     tempfile = require("os").homedir() + "/AppData/Roaming/Software\ City\ App/" + tempfilefile;
+    cachedir = require("os").homedir() + "/AppData/Roaming/Software\ City\ App/";
 }else{
     setfile = require("os").homedir() + "/.config/Software\ City\ App/" + settingsfile;
     tempfile = require("os").homedir() + "/.config/Software\ City\ App/" + tempfilefile;
+    cachedir = require("os").homedir() + "/.config/Software\ City\ App/";
 }
 
 try {
@@ -24,6 +27,7 @@ try {
     exports.getVal = getVal;
     exports.setTempVal = setTempVal;
     exports.getTempVal = getTempVal;
+    exports.cachedir = cachedir;
 } catch (error) {
     init_settings();
 }

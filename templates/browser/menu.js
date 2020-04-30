@@ -1,7 +1,4 @@
-const { app, Menu } = require('electron')
-const iswin32 = process.platform === "win32"
-
-const template = [
+var template = [
   {
     label: 'View',
     submenu: [
@@ -24,19 +21,10 @@ const template = [
       {
         label: 'Learn More',
         click: async () => {
-          const { shell } = require('electron')
+          var { shell } = require('electron')
           await shell.openExternal('https://projects.software-city.org/resources/electron/interfaceapp')
         }
       }
     ]
   }
 ]
-
-const menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu)
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if(iswin32){
-  app.setUserTasks([])
-}
