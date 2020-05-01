@@ -1,20 +1,18 @@
 const electron = require('electron')
 const {autoUpdater} = require('electron-updater');
-const sethandle = require("./settingshandler.js")
+const sethandle = require("./settingshandler.js");
+const menuhandle = require("./renderer/menu.js");
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow
 const Menu = electron.Menu
 const Tray = electron.Tray
-const path = require('path')
-const url = require('url')
 
+sethandle.init_settings()
 
-require("./renderer/menu.js")
 var quit = false;
 const iswin32 = process.platform === "win32"
 
 let win
-sethandle.init_settings()
 
 function createWindow () {
   if(app.requestSingleInstanceLock()){
@@ -28,6 +26,7 @@ function createWindow () {
         webviewTag: true
       }
     });
+    menuhandle.buildMenu();
     win.once('focus', () => win.flashFrame(false))
     if(iswin32){
       makeTray("win32");
@@ -44,13 +43,7 @@ function createWindow () {
           if (err) {
             win.loadFile('templates/offline.html');
           } else {
-            win.loadURL(url.format({
-              pathname: path.join(__dirname, 'templates/login.html'),
-              // pathname: path.join(__dirname, 'templates/update.html'),
-              // pathname: path.join(__dirname, 'templates/offline.html'),
-              protocol: 'file:',
-              slashes: true
-            }));
+            win.loadFile("templates/login.html");
           }
         });
       }

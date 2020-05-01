@@ -1,10 +1,17 @@
 {
   "productName": "Software City App",
   "homepage": "https://software-city.org/",
-  "bugs": {"url": "https://github.com/Davis-Software/SoftwareCityApp/issues", "email": "support@software-city.org"},
-  "author": {"name": "Software City Team", "email": "support@software-city.org", "url": "https://github.com/Davis-Software/SoftwareCityApp"},
+  "bugs": {
+    "url": "https://github.com/Davis-Software/SoftwareCityApp/issues",
+    "email": "support@software-city.org"
+  },
+  "author": {
+    "name": "Software City Team",
+    "email": "support@software-city.org",
+    "url": "https://github.com/Davis-Software/SoftwareCityApp"
+  },
   "name": "softwarecity_app",
-  "version": "0.3.6",
+  "version": "0.3.9",
   "description": "Software City App",
   "repository": "https://github.com/Davis-Software/SoftwareCityApp",
   "license": "MIT",
@@ -27,6 +34,7 @@
     "electron-updater": "^4.2.5",
     "jquery": "^3.3.1",
     "mysql": "^2.18.1",
+    "node-notifier": "^7.0.0",
     "popper.js": "^1.14.4"
   },
   "build": {

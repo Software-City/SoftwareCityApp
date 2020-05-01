@@ -142,6 +142,7 @@ Size when empty: <= 2029 KB <br>
   }
   function switchdevmode(){
     setVal("devMode", !getVal("devMode"));
+    if(confirm("You have to restart for this to take effect!")){remote.app.relaunch();remote.app.exit()}
   }
 
   function update(){
