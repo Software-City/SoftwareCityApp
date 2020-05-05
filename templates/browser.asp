@@ -14,12 +14,12 @@
     }
     .spinning{
         animation-name: spin-animation;
-        animation-duration: 1s;
+        animation-duration: 0.7s;
         animation-iteration-count: infinite;
     }
     @keyframes spin-animation{
         from{transform: rotate(0deg);}
-        to{transform: rotate(359deg);}
+        to{transform: rotate(360deg);}
     }
     .btn:focus,.btn:active {
         outline: none !important;

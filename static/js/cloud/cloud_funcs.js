@@ -39,23 +39,50 @@ function mainbtnconstructor(objects, element){
                     <button id="dwn_pr-${element}" title="stop downloading" class="btn material-icons dwn d-none spinning">autorenew</button>`;
     var btnMVT = `<button id="mv-${element}" title="Move to different folder" onclick="moveto('${element}')" class="btn material-icons mv">keyboard_return</button>
                     <button id="mv_pr-${element}" class="btn material-icons mv d-none spinning">autorenew</button>`;
+    var btnRNM = `<button id="rn-${element}" title="Rename element" onclick="rename('${element}')" class="btn material-icons rn">label</button>
+                    <button id="rn_pr-${element}" class="btn material-icons rn d-none spinning">autorenew</button>`;
     var btnBIN = `<button id="bin-${element}" title="Move file to Trash" onclick="trymovebin('${element}');" class="btn material-icons bin">delete</button>
                     <button id="bin_pr-${element}" class="btn material-icons bin d-none spinning">autorenew</button>`;
     var btnDEL = `<button id="del-${element}" title="Delete file" onclick="trydeleteforever('${element}');" class="btn material-icons del">delete_forever</button>
                     <button id="del_pr-${element}" class="btn material-icons del d-none spinning">autorenew</button>`;
+    var btnNONE = `-`
     var respo = "";
-    respo += `<a href="#" class="list-group-item list-group-item-action">`
-                // <span class="mdc-list-item__text">
     for(var x of objects) {
         if(x == "DWN"){respo += btnDWN}
         if(x == "MVT"){respo += btnMVT}
+        if(x == "RNM"){respo += btnRNM}
         if(x == "BIN"){respo += btnBIN}
         if(x == "DEL"){respo += btnDEL}
+        if(x == "none"){respo += btnNONE}
     }
-    respo += `&nbsp;${element}`
-    respo += `</li>`
     return respo;
 }
+
+function tableconstructor(name, size, type, btns){
+    var nametag = name;
+    if(type=="auto"){
+        type = name.split(".")
+        if(type.length > 1){
+            type = "." + type.reverse()[0]
+            nametag = nametag.split(type)[0]
+        }else{
+            type = "file"
+        }
+    }
+    var table_obj = `
+                    <tr>
+                        <td>${nametag}</td>
+                        <td>${mainbtnconstructor(btns, name)}</td>
+                        <td>${type}</td>
+                        <td>${size}</td>
+                    </tr>
+                    `;
+    return table_obj;
+}
+
+
+
+
 
 
 
@@ -69,13 +96,14 @@ function load(folder){
 
 function load_dirs(){
     var drawer = document.getElementById("customfolders")
-    var drawerobj = `<li class="mdc-list-item">
-                        <a onclick="load('{{x}}')">
-                            <i class="material-icons" aria-hidden="true">folder</i>
-                            <span>{{x}}</span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                        </a><button title="Delete folder" onclick="del_folder('{{x}}');" class="material-icons btn">close</button>
+    var drawerobj = `<li>
+                        <a onclick="load('{{x}}')" class="clearfix">
+                            <i class="material-icons btn" aria-hidden="true" style="padding-right:0px;">folder</i>
+                            <span>{{x}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <button title="Delete folder" onclick="del_folder('{{x}}');" class="material-icons btn float-right">close</button>
+                        </a>
                     </li>
-    `;
+                    `;
     var data = new FormData();
     var request = new XMLHttpRequest();
     data.append("dirs", "");
@@ -89,7 +117,6 @@ function load_dirs(){
             dirs.forEach(dir => drawer.innerHTML = drawer.innerHTML + drawerobj.replaceAll("{{x}}", dir));
         }
         else {
-            console.log(request.status)
             show_alert(`Error getting dirs`, "danger");
         }
     });
@@ -108,9 +135,22 @@ function load_files(folder){
     request.addEventListener("load", function (e) {
         if (request.status == 200) {
             var elements = request.response.files;
-            wrapperobj.innerHTML = "";
-            if(curr_folder=="bin"){elements.forEach(element => wrapperobj.innerHTML = wrapperobj.innerHTML + mainbtnconstructor(["MVT", "DEL"], element));}
-            else{elements.forEach(element => wrapperobj.innerHTML = wrapperobj.innerHTML + mainbtnconstructor(["DWN", "MVT", "BIN"], element));}
+            console.log(elements.length)
+            if(elements.length==0){wrapperobj.innerHTML = tableconstructor("This folder is empty", "-", "-", ["none"]);}
+            else{
+                wrapperobj.innerHTML = "";
+                elements.sort()
+                if(curr_folder=="bin"){elements.forEach(element => wrapperobj.innerHTML = wrapperobj.innerHTML + tableconstructor(element, "NaN", "auto", ["MVT", "DEL"]));}
+                else{
+                    for(element of elements){
+                        if(element=="c0dc6828-d6b7-4f3f-80ab-2fe2282c86ef"){
+                            wrapperobj.innerHTML = wrapperobj.innerHTML + tableconstructor(element, "-", "auto", ["DWN", "MVT", "RNM", "BIN", "DEL"])
+                        }else{
+                            wrapperobj.innerHTML = wrapperobj.innerHTML + tableconstructor(element, "NaN", "auto", ["DWN", "MVT", "BIN"])
+                        }
+                    }
+                }
+            }
         }
         else {
             show_alert(`Error getting files: ${request.response.message}`, "danger");
@@ -210,7 +250,7 @@ function download_file(filename) {
             show_alert(`Downloading file: '${filename}' (${file_size}MB)`, "success");
         }
         else {
-            show_alert(`Error downloading file`, "danger");
+            show_alert(`Error downloading file: ${request.status}`, "danger");
         }
         enable();
         reset()
@@ -287,7 +327,6 @@ function loadmoveModalobjs(){
             dirs.forEach(dir => modaldr.innerHTML = modaldr.innerHTML + obj.replaceAll("{{folder}}", dir));
         }
         else {
-            console.log(request.status)
             show_alert(`Error getting dirs`, "danger");
         }
     });
@@ -388,7 +427,7 @@ function del_folder(folder){
 function new_folder(){
     var infotext = document.getElementById("newfolderinfo")
     var foldername = document.getElementById("foldernameinput")
-    if(foldername.value!=""){
+    if(foldername.value!="" && foldername.value.length <= 12){
         var data = new FormData();
         var request = new XMLHttpRequest();
         data.append("newfolder", foldername.value);
@@ -403,9 +442,10 @@ function new_folder(){
             }
             $("#newfolderModal").modal("hide")
             load(foldername.value);
+            foldername.value = ""
         })
     }else{
-        infotext.innerText = "Please enter a foldername!"
+        infotext.innerText = "Please enter a valid foldername!"
     }
 }
 

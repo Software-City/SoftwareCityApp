@@ -28,8 +28,10 @@ function updateURL (event) {
         } else if (http === 'http://') {
             view.loadURL(val);
         } else {
-            if(val == "about:swcstart"){
+            if(val == "swc:start"){
                 view.loadURL("file:///" + __dirname.replaceAll("\\", "/") + "/browser/index.html");
+            }else if(val == "swc:info"){
+                view.loadURL("file:///" + __dirname.replaceAll("\\", "/") + "/browser/info.html");
             }else{
                 if(val.includes(".com") || val.includes(".de") || val.includes(".org") || val.includes(".net") || val.includes(".io")){
                     view.loadURL(`http://${val}`);
@@ -42,8 +44,10 @@ function updateURL (event) {
 }
 function updateNav (event) {
     var src = view.src;
-    if(src == "file:///" + __dirname.replaceAll("\\", "/") + "/browser/index.html"){
-        src = "about:swcstart";
+    if(src.replaceAll("%20", " ") == "file:///" + __dirname.replaceAll("\\", "/") + "/browser/index.html"){
+        src = "swc:start";
+    }else if(src.replaceAll("%20", " ") == "file:///" + __dirname.replaceAll("\\", "/") + "/browser/info.html"){
+        src = "swc:info";
     }
     omni.value = src;
 }

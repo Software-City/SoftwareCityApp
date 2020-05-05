@@ -1,10 +1,13 @@
+body{
+    overflow-y: hidden;
+}
 #wrap{
     padding-left: 2vw;
     padding-top:5vh;
 }
 
 #filewindow{
-    padding-left: 16vw;
+    padding-left: 220px;
 }
 
 .dwn{
@@ -21,6 +24,10 @@
 
 .del{
     color: rgb(187, 0, 0);
+}
+
+.rn{
+    color: rgb(255, 214, 80);
 }
 
 #progress{
@@ -47,4 +54,19 @@ button:focus {outline:0;}
 
 .mdc-drawer{
     float: left;
+    position: fixed;
+}
+#drawer{
+    height: 68vh;
+    overflow-y: scroll;
+    width: 210px;
+}
+#file_part{
+    margin-top: 145px;
+    height: 57vh;
+    overflow-y: scroll;
+}
+#info{
+    position: fixed;
+    padding-top: 90px;
 }

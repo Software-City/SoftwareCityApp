@@ -5,7 +5,7 @@
         width: 90vw;
     }
 </style>
-<ul class="nav nav-tabs nav-justified" style="position: fixed; width: 80vw;">
+<ul class="nav nav-tabs nav-justified" style="position: fixed; width: 87vw;">
     <li class="nav-item">
         <a class="nav-link" id="tsbtn" onclick="loadserverpage('ts.html',this);">Teamspeak</a>
     </li>

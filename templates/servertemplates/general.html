@@ -2,7 +2,19 @@
     #partload{
         margin-left: 40vw;
         margin-top:10vh;
-}
+    }
+    .green{
+        color: green;
+    }
+    .green:hover{
+        color: lime;
+    }
+    .red{
+        color: rgb(185, 0, 0);
+    }
+    .red:hover{
+        color: rgb(255, 0, 0);
+    }
 </style>
 <div id="partload" class="spinner-border"></div>
 <div class="container" id="infosection" hidden>
@@ -35,7 +47,11 @@
     <p>Cloud HDD: <span id="disk_cloud"></span></p>
     <br>
     <h3>Different</h3>
-    <p>pp: very soft</p>
+    <p id="Transmission Encoding" class="misc"></p>
+    <p id="Python Path" class="misc"></p>
+    <p id="Python Warnoptions" class="misc"></p>
+    <p id="pp" class="misc"></p>
+    <p id="pp options" class="misc"></p>
 </div>
 <script>
 
@@ -44,10 +60,10 @@ var info = document.getElementById("infosection");
 
 function resp_render(elem, value, truestate, falsestate){
     if(value){
-        elem.setAttribute("style", "color:green;");
+        elem.classList.add("green");
         resp = truestate;
     }else{
-        elem.setAttribute("style", "color:red;");
+        elem.classList.add("red");
         resp = falsestate;
     }
     elem.innerText = resp;
@@ -89,7 +105,7 @@ function getdata(){
     request.open("GET","https://interface.software-city.org/api?mode=apprest&data=get_general");
     request.addEventListener('load', function(event) {
     if (request.status >= 200 && request.status < 300) {
-        var resp = request.response
+        var resp = request.response;
 
         resp_render(state, resp.general.online, "online", "offline");
         responder(errors, resp.general.errors);
@@ -111,6 +127,13 @@ function getdata(){
         responder(backupdisk, resp.diskusage.disk_backup.usage + "% " + " (" + resp.diskusage.disk_backup.usedGB + "GB / " + resp.diskusage.disk_backup.totalGB + "GB)");
         responder(steamdisk, resp.diskusage.disk_steam.usage + "% " + " (" + resp.diskusage.disk_steam.usedGB + "GB / " + resp.diskusage.disk_steam.totalGB + "GB)");
         responder(clouddisk, resp.diskusage.disk_cloud.usage + "% " + " (" + resp.diskusage.disk_cloud.usedGB + "GB / " + resp.diskusage.disk_cloud.totalGB + "GB)");
+
+        var ob;
+        var misc = document.getElementsByClassName("misc")
+        for(x of misc){
+            ob = x.id
+            responder(x, ob + ": " + resp.misc[ob]);
+        }
 
     } else {
         info.innerHTML = "Error getting data";
