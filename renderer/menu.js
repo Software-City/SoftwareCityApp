@@ -39,7 +39,16 @@ const devtemplate = [
       { role: 'reload' },
       { role: 'forcereload' },
       { type: 'separator' },
-      { role: 'togglefullscreen' }
+      { role: 'togglefullscreen' },
+      { type: 'separator' },
+      {
+        label: "Restart",
+        click: async () => {
+          const { app } = require('electron')
+          app.relaunch();
+          app.quit();
+        }
+      }
     ]
   },
   {

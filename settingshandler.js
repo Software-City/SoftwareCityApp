@@ -1,5 +1,5 @@
-const iswin32 = process.platform === "win32"
-const fs = require('fs');
+var iswin32 = process.platform === "win32"
+var fs = require('fs');
 
 var setfile;
 var cachefile;
@@ -9,8 +9,27 @@ var cachedata;
 var tempdata;
 var cachedir;
 
-const settingsfile = "settings.json";
-const tempfilefile = "cachefile.json";
+var settingsfile = "settings.json";
+var tempfilefile = "cachefile.json";
+
+var def_config = {
+    "theme":"dark",
+    "systemtray":false,
+    "loggedin":false,
+    "credentials":[],
+    "autoupdate":true,
+    "defstartpage":"Dashboard",
+    "serverstartpage":"Teamspeak",
+    "cloudstartpage":"MyCloud",
+    "devMode": false,
+    "chatsettings": {
+        "sendonreturn": true,
+        "personal_namecolor": "#A74300",
+        "personal_textcolor": "#689C1A",
+        "other_namecolor": "#ADFF2F",
+        "other_textcolor": "#808080"
+    }
+}
 
 if(iswin32){
     setfile = require("os").homedir() + "/AppData/Roaming/Software\ City\ App/" + settingsfile;
@@ -35,8 +54,20 @@ try {
 }
 
 
+function re_init_settings(){
+    var creds = getVal("credentials")
+    var logged = getVal("loggedin")
+    fs.writeFileSync(setfile, JSON.stringify(def_config));
+    fs.writeFileSync(cachefile, JSON.stringify({}));
+    settings = JSON.parse(fs.readFileSync(setfile, "utf8"));
+    cachedata = JSON.parse(fs.readFileSync(cachefile, "utf8"));
+    tempdata = JSON.parse("{}")
+    setVal("credentials", creds)
+    setVal("loggedin", logged)
+}
+
+
 function init_settings (){
-    const def_config = {"theme":"dark","systemtray":false,"loggedin":false,"credentials":[],"autoupdate":true,"defstartpage":"Dashboard","serverstartpage":"Teamspeak","cloudstartpage":"MyCloud", "devMode": false}
     if(!fs.existsSync(setfile)){
         fs.writeFileSync(setfile, JSON.stringify(def_config));
     }
@@ -45,7 +76,7 @@ function init_settings (){
     }
     settings = JSON.parse(fs.readFileSync(setfile, "utf8"));
     cachedata = JSON.parse(fs.readFileSync(cachefile, "utf8"));
-    tempdata = JSON.stringify({})
+    tempdata = JSON.parse("{}")
 }
 
 function commit_cache(){
@@ -64,6 +95,15 @@ function getCacheVal(key){
 
 function commit(){
     fs.writeFileSync(setfile, JSON.stringify(settings));
+}
+
+function setSubVal(key, subkey, val){
+    settings[key][subkey] = val;
+    commit();
+}
+
+function getSubVal(key, subkey){
+    return settings[key][subkey];
 }
 
 function setVal(key, val){

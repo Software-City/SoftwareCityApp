@@ -97,9 +97,9 @@ function load(folder){
 function load_dirs(){
     var drawer = document.getElementById("customfolders")
     var drawerobj = `<li>
-                        <a onclick="load('{{x}}')" class="clearfix">
-                            <i class="material-icons btn" aria-hidden="true" style="padding-right:0px;">folder</i>
-                            <span>{{x}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="clearfix foldersymbol">
+                            <i class="material-icons btn" aria-hidden="true" style="padding-right:0px;" onclick="load('{{x}}')">folder</i>
+                            <span onclick="load('{{x}}')" class="folderclick">{{x}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <button title="Delete folder" onclick="del_folder('{{x}}');" class="material-icons btn float-right">close</button>
                         </a>
                     </li>
@@ -113,6 +113,7 @@ function load_dirs(){
     request.addEventListener("load", function (e) {
         if (request.status == 200) {
             var dirs = request.response.dirs;
+            dirs.sort()
             drawer.innerHTML = "";
             dirs.forEach(dir => drawer.innerHTML = drawer.innerHTML + drawerobj.replaceAll("{{x}}", dir));
         }

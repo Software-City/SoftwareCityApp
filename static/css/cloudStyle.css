@@ -70,3 +70,9 @@ button:focus {outline:0;}
     position: fixed;
     padding-top: 90px;
 }
+.foldersymbol{
+    cursor: default;
+}
+.folderclick{
+    cursor: pointer;
+}

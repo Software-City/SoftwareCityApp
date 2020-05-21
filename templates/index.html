@@ -10,7 +10,7 @@
     <section id="settings"></section>
   </head>
   <body>
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top navbardivclass" id="navbar">
       <a class="navbar-brand" href="#"><img src="./../static/logos/logo.ico" alt="Logo" style="width:40px;">&nbsp; Software City</a>
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav">
@@ -24,9 +24,14 @@
             <a class="nav-link sidebarclass" onclick="loadpage(this, 'settings.asp')">Settings</a>
           </li>    
         </ul>
-      </div>  
+      </div>
     </nav>
-    <div id="sidebar">
+
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top navbardivclass" id="custom-navbar" hidden>
+
+    </nav>
+
+    <div id="sidebar" class="sidebardivclass">
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">
           <a class="nav-link sidebarclass" onclick="loadpage(this, 'dash.asp')">Dashboard</a>
@@ -35,8 +40,8 @@
           <a class="nav-link sidebarclass" onclick="loadpage(this, 'https://cdn.software-city.org/appcontent/eventpage/events.asp')">Events</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" onclick="alert('This feature is still WIP');">Chat</a>
-          <!-- <a class="nav-link sidebarclass" onclick="loadpage(this, 'chat.asp')">Chat</a> -->
+          <!-- <a class="nav-link disabled" onclick="alert('This feature is still WIP');">Chat</a> -->
+          <a class="nav-link sidebarclass" onclick="loadpage(this, 'chat.asp')">Chat</a>
         </li>
         <li class="nav-item">
           <a class="nav-link sidebarclass" onclick="loadpage(this, 'server.asp')">Servers</a>
@@ -46,7 +51,13 @@
         </li>
       </ul>
     </div>
-    <div id="mainpage" class="container-fluid"> <div id="load" class="spinner-border text-light"></div></div>
+
+    <div id="custom-sidebar" class="sidebardivclass" hidden>
+
+    </div>
+
+    <div id="mainpage" class="mainpage mainpage-norm"></div>
+
     <script>
       function loadpage(btn, page){
         var buts = document.getElementsByClassName("sidebarclass");
@@ -60,6 +71,7 @@
       }
     </script>
     <script src="./../settingshandler.js"></script>
+    <script src="./../static/js/tools.js"></script>
     <script src="./../renderer/theme.js"></script>
     <script src="./../renderer/pageloader.js"></script>
     <script>
@@ -68,7 +80,7 @@
       switch(start){
         case "Dashboard": loadpage(elem[3], "dash.asp");break;
         case "Events": loadpage(elem[4], "https://cdn.software-city.org/appcontent/eventpage/events.asp");break;
-        case "Chat": loadpage(elem[5], "dash.asp");break;
+        case "Chat": loadpage(elem[5], "chat.asp");break;
         case "Servers": loadpage(elem[6], "server.asp");break;
         case "Cloud": loadpage(elem[7], "cloud.asp");break;
         default: loadpage(elem[3], "dash.asp");

@@ -4,6 +4,9 @@
         min-height: 20vh;
         width: 90vw;
     }
+    #selector{
+        padding-top: 2vh;
+    }
 </style>
 
 
@@ -89,15 +92,17 @@
 
 
 
-
-<ul class="nav nav-tabs nav-justified" style="position: fixed; width: 87vw;">
-    <li class="nav-item">
-        <a class="nav-link cloudswitch" id="pcloudbtn" onclick="loadcloudpage('pcloud.html',this);">My Cloud</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link cloudswitch" id="cloudbtn" onclick="loadcloudpage('cloud.html',this);">Public Cloud</a>
-    </li>
-</ul><br>
+<div class="container-fluid" id="selector">
+    <ul class="nav nav-tabs nav-justified" style="position: fixed; width: 87vw;">
+        <li class="nav-item">
+            <a class="nav-link cloudswitch" id="pcloudbtn" onclick="loadcloudpage('pcloud.html',this);">My Cloud</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link cloudswitch" id="cloudbtn" onclick="loadcloudpage('cloud.html',this);">Public Cloud</a>
+        </li>
+    </ul>
+</div>
+<br>
 <div id="cloudwin"></div>
 <script>
     var buts = [document.getElementById("pcloudbtn"),document.getElementById("cloudbtn")];

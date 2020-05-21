@@ -23,6 +23,14 @@ function reset_alert(){
 }
 
 function openExplorer(path){
-    const {shell} = require('electron')
     shell.openItem('folderpath')
+}
+
+function openwebpage(page){
+    shell.openExternal(page)
+}
+
+function openinternalbrowser(url){
+    tempdata.browserurloverride = url;
+    loadpage(this, 'browser.asp')
 }

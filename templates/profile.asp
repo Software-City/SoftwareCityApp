@@ -1,9 +1,29 @@
-<text>Logged in as: {{username}}</text>&nbsp;
-<button type="button" class="btn btn-dark" data-toggle="modal" data-target="#logoutModal">
-    Logout
-</button><br><br>
-<!-- <h4>Ranks: <span id="mainrank" class="badge badge-secondary" style="color: red;"></span> <span id="ranks"><span class="badge badge-secondary"></span></span></h4> -->
+<style>
+    #load{
+        margin-left: 40vw;
+        margin-top:35vh;
+    }
+    body{
+        overflow-y: hidden;
+    }
+</style>
 
+<br>
+<div id="load" class="spinner-border"></div>
+<div class="card container-fluid" style="width:400px" id="profilecont" hidden>
+    <img class="card-img-top" src="https://cdn.software-city.org/appcontent/dashpics/minecraft.png" alt="Card image" style="width:100%">
+    <div class="card-body">
+        <h4 class="card-title">{{username}}</h4>
+        <p class="card-text">Ranks: &nbsp;<span class="badge badge-secondary" style="color: red;">{{mainrank}}</span> <span>{{ranks}}</span></p>
+        <button type="button" class="btn btn-primary" onclick="openinternalbrowser(`https://interface.software-city.org/${getVal('credentials')[0]}/profile`);">
+            Edit
+        </button>
+        &nbsp;
+        <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#logoutModal">
+            Logout
+        </button>
+    </div>
+</div>
 
 
 
@@ -34,7 +54,33 @@
         setVal("credentials", []);
         window.location.href = "login.html";
     }
-    var page = document.getElementById("mainpage");
+    function setItem(item, val){
+        page.innerHTML = page.innerHTML.replace(`{{${item}}}`, val)
+    }
+    var load = document.getElementById("load")
+    var page = document.getElementById("profilecont");
     var creds = getVal("credentials")
-    page.innerHTML = page.innerHTML.replace("{{username}}", creds[0])
+    var request = new XMLHttpRequest();
+    request.responseType = "json";
+    request.open("GET",`https://interface.software-city.org/api?mode=apprest&data=get_userranks&user=${creds[0]}&rank=all`);
+    request.addEventListener('load', function(event) {
+        if (request.status >= 200 && request.status < 300) {
+            if(request.response.execcode == 0){
+                setItem("username", creds[0])
+                setItem("mainrank", request.response.mainrank)
+                var rankshtml = "";
+                for(x of request.response.ranks){
+                    if(x != request.response.mainrank){rankshtml += `<span class="badge badge-secondary">${x}</span>&nbsp;`}
+                }
+                setItem("ranks", rankshtml)
+                load.hidden = true;
+                page.hidden = false;
+            }else{
+                info.innerText = "Wrong username or password!"
+            }
+        } else {
+            window.location.href = "offline.html"
+        }
+    });
+    request.send();
 </script>
