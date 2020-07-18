@@ -1,85 +1,80 @@
-<link rel="stylesheet" href="./../static/css/cloudStyle.css">
-
-<div id="overlay-wrapper"></div>
-<div id="wrap">
-    <aside class="mdc-drawer">
-        <div>
-            <h3>Folders</h3>
-        </div>
-        <div id="drawer">
-            <ul class="nav flex-column">
-                <hr>
-                <h6>Main Folders</h6>
-                <li class="nav-item">
-                    <a onclick="load('main')" class="clearfix">
-                        <i class="material-icons btn" aria-hidden="true" style="padding-right:0px;">folder_open</i>
-                        <span>Main Folder</span>
-                    </a>
-                </li>
-                <li>
-                    <a onclick="load('bin')" class="clearfix">
-                        <i class="material-icons btn" aria-hidden="true" style="padding-right:0px;">delete</i>
-                        <span>Trash</span>
-                    </a>
-                </li>
-                <hr>
-                <h6>Custom Folders</h6>
-                <span id="customfolders">
-
-                </span>
-                <hr>
-                <h6>Options</h6>
-                <a data-toggle="modal" data-target="#newfolderModal">
-                    <i class="material-icons btn" aria-hidden="true" style="padding-right:0px;">create_new_folder</i>
-                    <span>New Folder</span>
-                </a>
-            </ul>
-        </div>
-    </aside>
-    <div id="filewindow">
-        <br>
-        <div id="upload_section" style="position:fixed;">
-            <label>Upload </label> <label id="file_input_label">File</label><br>
-            <input type="file" class="btn" name="upload" id="file_input" oninput="input_filename();">
-            <button onclick="upload();" id="upload_btn" class="btn btn-primary">Upload</button>
-            <button class="btn btn-primary d-none" id="loading_btn" type="button" disabled>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                Uploading...
-            </button>
-            <button type="button" id="cancel_btn" class="btn btn-secondary d-none">Cancel upload</button>
-            <br>
-            <div id="progress_wrapper" class="d-none">
-                <label id="progress_status"></label>
-                <div class="progress mb-3">
-                    <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            </div>
-            <br>
-        </div>
-        <div id="alert_wrapper"></div>
-        <div id="info">
-            <span>Files in Public Cloud:</span><br><span id="folderinfo"></span>
-        </div>
-        <div id="alert_wrapper"></div>
-        <div id="file_part">
-            <input class="form-control" id="filesearch" type="text" placeholder="Search">
-            <table class="table table-hover" id="filetable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Options</th>
-                        <th>Type</th>
-                        <th>Size</th>
-                    </tr>
-                </thead>
-                <tbody id="wrapperlist">
-
-                </tbody>
-            </table>
-            <br><br>
-        </div>
+<aside id="mdc-drawer">
+    <div id="drawer-header">
+        <h4>Public Cloud</h4>
     </div>
+    <div id="drawer">
+        <ul class="nav flex-column">
+            <h6>Directories</h6>
+            <li class="nav-item">
+                <a class="clearfix" onclick="navigate('back')">
+                    <i class="material-icons btn mi2" aria-hidden="true">arrow_back</i>
+                    <span class="folderclick">Back</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="clearfix" onclick="navigate('main')">
+                    <i class="material-icons btn mi2" aria-hidden="true">folder_open</i>
+                    <span class="folderclick">Main Cloud</span>
+                </a>
+            </li>
+            <!-- <li class="nav-item">
+                <a onclick="load('main')" class="clearfix">
+                    <i class="material-icons btn mi2" aria-hidden="true">lock</i>
+                    <span class="folderclick">Safe Storage</span>
+                </a>
+            </li> -->
+            <li>
+                <a onclick="navigate('trash')" class="clearfix">
+                    <i class="material-icons btn mi2" aria-hidden="true">delete</i>
+                    <span class="folderclick">Trash</span>
+                </a>
+            </li>
+            <hr>
+            <h6>Options</h6>
+            <a onclick="newFile()">
+                <i class="material-icons btn mi2" aria-hidden="true">note_add</i>
+                <span class="folderclick">New File</span>
+            </a>
+            <a onclick="newFolder()">
+                <i class="material-icons btn mi2" aria-hidden="true">create_new_folder</i>
+                <span class="folderclick">New Folder</span>
+            </a>
+            <a onclick="upload()">
+                <i class="material-icons btn mi2" aria-hidden="true">cloud_upload</i>
+                <span class="folderclick">Upload</span>
+            </a>
+        </ul>
+    </div>
+</aside>
+
+
+
+
+<div id="filewindow">
+    <p>Index of <a id="indexof"></a></p>
+    <div id="file_part">
+        <input class="form-control" id="filesearch" type="text" placeholder="Search">
+        <table class="table table-hover" id="filetable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Options</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                </tr>
+            </thead>
+            <tbody id="wrapperlist">
+                
+            </tbody>
+        </table>
+        <br><br>
+    </div>
+
 </div>
+
+
+
+
 <script>
     $(document).ready(function(){
         $("#filesearch").on("keyup", function() {
@@ -89,11 +84,9 @@
             });
         });
     });
-    var user = getVal("credentials")[0]
-    var url = `https://interface.software-city.org/${user}/cloud`;
-    var curr_folder = "main";
+    var url = `https://interface.software-city.org/${getVal("credentials")[0]}/cloud/app`
+    // var url = `http://localhost/${getVal("credentials")[0]}/cloud/app`
+    var path = ""
+
+    navigate("main")
 </script>
-<script src="./../static/js/tools.js"></script>
-<script src="./../static/js/progressbar.js"></script>
-<script src="./../static/js/download.js"></script>
-<script src="./../static/js/cloud/cloud_funcs.js"></script>

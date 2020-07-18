@@ -45,7 +45,18 @@
     <button id="clearHistory" class="btn material-icons" onclick="clearhist();" title="Clear all history">layers_clear</button>
     <button id="togglefullscreen" class="btn material-icons" onclick="togglefullscreen(this);" title="Toggle borders">fullscreen</button>
 </nav>
-<webview id="view" src="./browser/index.html" autosize="on" allowpopups class="view"></webview>
+
+<webview 
+id="view" 
+src="./browser/index.html" 
+autosize="on" 
+allowpopups 
+class="view"
+enableremotemodule="true"
+preload="./browser/index.js"
+>
+
+</webview>
 
 <script src="./../static/js/tools.js"></script>
 <script src="./browser/renderer.js"></script>
@@ -86,5 +97,8 @@
         if(webview.canGoBack()){back.disabled = false;}else{back.disabled = true;}
         if(webview.canGoForward()){forward.disabled = false;}else{forward.disabled = true;}
     });
-    view.addEventListener("contextmenu", (e) => {console.log(e)});
+    webview.addEventListener("dom-ready", event => {
+        webview.blur();
+        webview.focus();
+    });
 </script>

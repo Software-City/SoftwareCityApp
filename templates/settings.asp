@@ -143,6 +143,52 @@
       <button class="btn btn-warning" onclick="setChatColor('other_textcolor');">Pick a color</button>
     </div>
   </div>
+  <br>
+  <div class="form-group">
+    <label for="chat-notifysoundsel">Notification sound</label> <br>
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="chat-custsound" onclick="switch_customsound();" disabled>
+      <label class="custom-control-label" for="chat-custsound">Custom sound</label>
+    </div>
+    <div id="non-custsound">
+      &nbsp; <label for="chat-notifysoundsel">Current Sound: <span id="chat-notifysound"></span></label>
+      <select class="form-control" id="chat-notifysoundsel" style="width: 300px;">
+        <optgroup label="Preset: Normal">
+          <option value="clearly">Clearly</option>
+          <option value="done-for-you">Done for you</option>
+          <option value="glitch-in-the-matrix">Glitch in the Matrix</option>
+          <option value="just-saying">Just saying</option>
+          <option value="me-too">Me too!</option>
+          <option value="out-of-space-dog">Out of space dog</option>
+          <option value="sharp">Sharp</option>
+          <option value="swiftly">Swiftly</option>
+        </optgroup>
+        <optgroup label="Preset: dumb">
+          <option value="dumb/deeznuts">Deez Nuts</option>
+          <option value="dumb/oof">Roblox oof</option>
+          <option value="dumb/yeet">YEET!</option>
+          <option value="dumb/zenYes">Zenyatta Yes</option>
+        </optgroup>
+      </select>
+      <div class="input-group-append">
+        <button class="btn btn-success" onclick="playselsound()">Play</button>
+        &nbsp;
+        <button class="btn btn-warning" onclick="applystandsound()">Apply</button>
+      </div>
+    </div>
+    <div id="cust-sound">
+      <label for="chat-customsoundin">Custom Sound:</label>
+      <div class="input-group mb-3">
+        <div class="input-group-append">
+          <span class="input-group-text">Path</span>
+        </div>
+        <input type="text" class="form-control" placeholder="C:\path\to\your\sound.mp3" id="chat-customsoundin" disabled>
+        <div class="input-group-append">
+          <button class="btn btn-warning" id="change_cust-sound">Change</button>
+        </div>
+      </div>
+    </div>
+  </div>
 <hr>
 
 

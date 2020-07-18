@@ -1,99 +1,26 @@
-<style>
-    #serverwin{
-        padding-top: 10vh;
-        min-height: 20vh;
-        width: 90vw;
-    }
-    #selector{
-        padding-top: 2vh;
-    }
-</style>
+<link rel="stylesheet" href="./../static/css/cloudStyle.css">
 
+<div id="overlay-wrapper"></div>
 
-
-
-<div class="modal" id="newfolderModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">New folder</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <span>Only ASCII and max 12 characters</span><br>
-                <span style="color: red;" id="newfolderinfo"></span>
-                <input type="text" class="form-control" placeholder="Folder name" id="foldernameinput">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" onclick="new_folder()">Create</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal" id="moveModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Move Folder</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="movetofolderbtndr">
-                        Folder
-                    </button>
-                    <div class="dropdown-menu" id="movetofolderdr">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-success" onclick="movetonow();">Move</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal" id="binModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Move File to Trash?</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                Continue? You can retrieve the file again!
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-warning" onclick="movetobin();">Move to Trash</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal" id="deletefileModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Delete file?</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                Do you really, really want to delete this file? It won't be recoverable!
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" onclick="deleteforever();">Delete</button>
-            </div>
-        </div>
-    </div>
+<div id="navbarlayout" hidden>
+    <a class="navbar-brand"><img src="./../static/logos/logo.ico" alt="Logo" style="width:40px;">&nbsp; Software City Cloud</a>
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link sidebarclass resetsocket" onclick="goback();">Back</a>
+        </li>
+        <ul class="nav nav-pills" id="cl-sel">
+            <li class="nav-item">
+                <a class="nav-link cloudswitch" id="pcloudbtn" onclick="loadcloudpage('pcloud.html',this);">My Cloud</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link cloudswitch" id="cloudbtn" onclick="loadcloudpage('cloud.html',this);">Public Cloud</a>
+            </li>
+        </ul>
+    </ul>
 </div>
 
-
-
-
-<div class="container-fluid" id="selector">
-    <ul class="nav nav-tabs nav-justified" style="position: fixed; width: 87vw;">
+<div id="sidebarlayout" hidden>
+    <ul class="nav nav-pills flex-column">
         <li class="nav-item">
             <a class="nav-link cloudswitch" id="pcloudbtn" onclick="loadcloudpage('pcloud.html',this);">My Cloud</a>
         </li>
@@ -102,8 +29,10 @@
         </li>
     </ul>
 </div>
-<br>
+
 <div id="cloudwin"></div>
+
+<script src="./../static/js/cloud/cloud_funcs.js"></script>
 <script>
     var buts = [document.getElementById("pcloudbtn"),document.getElementById("cloudbtn")];
     function loadcloudpage(page,btn){

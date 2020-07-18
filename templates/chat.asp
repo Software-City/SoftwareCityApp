@@ -5,7 +5,7 @@
 </style>
 
 
-<div class="modal" id="infoModal">
+<!-- <div class="modal" id="infoModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -24,7 +24,7 @@
 </div>
 <script>
     $("#infoModal").modal()
-</script>
+</script> -->
 
 
 <link rel="stylesheet" href="./../static/css/chatStyle.css">
@@ -63,11 +63,11 @@
 
 <div id="chatwin-nav" class="fixed-top">
     <nav class="navbar bg-dark" id="navbar">
-        <a class="navbar-brand"><img src="./../static/logos/logo.ico" alt="Logo" style="width:40px;">&nbsp; {{chatname}}</a>
+        <a class="navbar-brand"><img src="./../static/logos/logo.ico" alt="Logo" style="width:40px;">&nbsp; <span id="chatwin-nav-chatname"></span></a>
     </nav>
 </div>
 <div id="chatwin-main">
-    <div class="media p-3">
+    <!-- <div class="media p-3">
         <div class="media-body">
             <h6>{{name}}</h6>
             <p>{{message}}</p>
@@ -78,7 +78,7 @@
             <h6>{{name}}</h6>
             <p>{{message}}</p>
         </div>
-    </div>
+    </div> -->
 </div>
 <div id="chatwin-footer" class="fixed-bottom">
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -90,9 +90,9 @@
 </div>
 
 
-<!-- <script src="./../static/modules/socket.js"></script> -->
+<script src="./../static/modules/socket.js"></script>
 <script src="./../static/js/chat/render.js"></script>
-<!-- <script src="./../static/js/chat/socket.js"></script> -->
+<script src="./../static/js/chat/socket.js"></script>
 <script>
     
 </script>

@@ -10,18 +10,28 @@
 
 <br>
 <div id="load" class="spinner-border"></div>
-<div class="card container-fluid" style="width:400px" id="profilecont" hidden>
-    <img class="card-img-top" src="https://cdn.software-city.org/appcontent/dashpics/minecraft.png" alt="Card image" style="width:100%">
-    <div class="card-body">
-        <h4 class="card-title">{{username}}</h4>
-        <p class="card-text">Ranks: &nbsp;<span class="badge badge-secondary" style="color: red;">{{mainrank}}</span> <span>{{ranks}}</span></p>
-        <button type="button" class="btn btn-primary" onclick="openinternalbrowser(`https://interface.software-city.org/${getVal('credentials')[0]}/profile`);">
-            Edit
-        </button>
-        &nbsp;
-        <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#logoutModal">
-            Logout
-        </button>
+<div class="row" id="profilecont" hidden>
+    <div class="card m-4" style="width:400px">
+        <div class="card-body">
+            <p>Avatar</p>
+        </div>
+        <img class="card-img-top avatar" src="" alt="Card image" style="width:100%;">
+    </div>
+    <div class="card m-4" style="width:400px">
+        <div class="card-body" style="position: relative;">
+            <p>Userinfo</p>
+            <div style="position: absolute; bottom: 20px;">
+                <h4 class="card-title">{{username}}</h4>
+                <p class="card-text">Ranks: &nbsp;<span class="badge badge-secondary" style="color: red;">{{mainrank}}</span> <span>{{ranks}}</span></p>
+                <button type="button" class="btn btn-primary" onclick="openinternalbrowser(`https://interface.software-city.org/${getVal('credentials')[0]}/profile`);">
+                    Edit
+                </button>
+                &nbsp;
+                <button type="button" class="btn btn-danger float-right" data-toggle="modal" data-target="#logoutModal">
+                    Logout
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -49,6 +59,17 @@
     </div>
 </div>
 <script>
+    $.ajax({
+        url: `http://interface.software-city.org/${getVal("credentials")[0]}/avatar`,
+        success: function(data){
+            for(x of document.getElementsByClassName("avatar")){
+                x.src = data.avatar
+            }
+        },
+        dataType: "json"
+    });
+
+
     function logout(){
         setVal("loggedin", false);
         setVal("credentials", []);
