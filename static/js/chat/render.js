@@ -27,6 +27,9 @@ var messages = {
 }
 
 
+var remote = require("electron").remote
+var win = remote.getCurrentWindow()
+
 
 var navbar = document.getElementById("navbar")
 var custom_navbar = document.getElementById("custom-navbar")
@@ -47,6 +50,7 @@ sidebar.hidden = true;
 custom_sidebar.hidden = false;
 
 function goback(){
+    disconnect()
     navbar.hidden = false;
     custom_navbar.hidden = true;
     sidebar.hidden = false;
@@ -67,6 +71,36 @@ function setConfig(){
     document.documentElement.style.setProperty("--chatconfig-other_textcolor", getSubVal("chatsettings", "other_textcolor"))
 }
 
+
+function playSound(){
+    var audio = document.createElement('audio');
+    audio.style.display = "none";
+    // if(getSubVal("", "")){  }
+    audio.src = `./../static/audio/notifications/${getSubVal("chatsettings", "sound_notify")}.mp3`;
+    audio.autoplay = true;
+    audio.onended = function(){
+        audio.remove()
+    };
+    document.body.appendChild(audio);
+}
+function notifyer(user, title, body, silent, duration="default"){
+    if(user!=getVal("credentials")[0]){
+        playSound()
+        if(!win.isFocused()){
+            let myNotification = new Notification(title, {
+                body: body,
+                silent: silent,
+                icon: "./../static/logos/logo.ico",
+                timeoutType: duration
+            });
+
+            myNotification.onclick = () => {
+                console.log('Notification clicked');
+            }
+        }
+    }
+}
+
 function sendtoscreen(msg, usr){
     if(usr == getVal("credentials")[0]){
         chatarea.innerHTML += message_sent.replace("{{name}}", getVal("credentials")[0]).replace("{{message}}", msg)
@@ -82,11 +116,25 @@ inputtext.addEventListener("keydown", function(ev){
     }
 });
 
+function set_chatwin(msgs){
+    if(msgs.user==getVal("credentials")[0]){
+        chatarea.innerHTML = ""
+        for (x of msgs.li){
+            sendtoscreen(x.message, x.user)
+        }
+        $("html, body").animate({scrollTop: $('html, body').get(0).scrollHeight}, 500);
+    }
+}
+
 function loadchat(btn){
     for(let e of buts){e.classList.remove("active")}
     var chat = btn.getAttribute("chat")
     btn.classList.add("active")
+    document.getElementById("chatwin-nav-chatname").innerText = btn.innerText
+    askformsgs(getVal("credentials")[0])
 }
-setConfig();
-loadchat(buts[0])
-$("html, body").animate({scrollTop: $('html, body').get(0).scrollHeight}, 500);
+
+setTimeout(function(){
+    setConfig();
+    loadchat(buts[0])
+}, 500)

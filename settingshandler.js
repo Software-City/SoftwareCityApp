@@ -27,7 +27,9 @@ var def_config = {
         "personal_namecolor": "#A74300",
         "personal_textcolor": "#689C1A",
         "other_namecolor": "#ADFF2F",
-        "other_textcolor": "#808080"
+        "other_textcolor": "#808080",
+        "sound_custom": false,
+        "sound_notify": "me-too"
     }
 }
 

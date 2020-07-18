@@ -9,6 +9,12 @@ const Tray = electron.Tray
 
 sethandle.init_settings()
 
+app.allowRendererProcessReuse = true;
+
+if(sethandle.getVal("devMode")){
+  app.setAppUserModelId(process.execPath);
+}
+
 var quit = false;
 const iswin32 = process.platform === "win32"
 
@@ -26,6 +32,7 @@ function createWindow () {
         webviewTag: true
       }
     });
+
     menuhandle.buildMenu();
     win.once('focus', () => win.flashFrame(false))
     if(iswin32){
@@ -61,9 +68,6 @@ function createWindow () {
     } catch (error) {
       alert(error)
     }
-  }else{
-    win.flashFrame(true)
-    app.quit()
   }
 }
 app.whenReady().then(createWindow)
@@ -109,6 +113,30 @@ function makeTray(dist){
   tray.on('double-click', () => {
       win.show()
   })
+}
+
+
+function openedByUrl(url) {
+  if (url) {
+    win.webContents.send('openedByUrl', url);
+  }
+}
+
+if (app.requestSingleInstanceLock()) {
+  app.on('second-instance', (e, argv) => {
+      if (process.platform === 'win32') {
+          openedByUrl(argv.find((arg) => arg.startsWith('swc_desktopapp:')));
+      }
+      if (win) {
+          if (win.isMinimized()) win.restore();
+          win.show()
+          win.focus()
+      }
+  }
+)};
+
+if (!app.isDefaultProtocolClient('swc_desktopapp')) {
+  app.setAsDefaultProtocolClient('swc_desktopapp');
 }
 
 

@@ -1,0 +1,5 @@
+owner: Davis-Software
+repo: SoftwareCityApp
+provider: github
+publishAutoUpdate: true
+updaterCacheDirName: softwarecity_app-updater

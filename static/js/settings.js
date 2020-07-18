@@ -1,3 +1,11 @@
+function re_init(error){
+    setTimeout(function(){
+        re_init_settings();
+        window.location.href = "login.html"
+    }, 5000);
+    document.getElementById("mainpage").innerText = `Error occured: ${error} || Reseting settings... || Please wait for 5 seconds!`
+}
+
 var remote = require('electron').remote;
 var win = remote.getCurrentWindow();
 var operator = win.webContents.session;
@@ -78,10 +86,56 @@ try {
 
     update()
 } catch (error) {
-    setTimeout(function(){
-        re_init_settings();
-        window.location.href = "login.html"
-    }, 5000);
-    document.getElementById("mainpage").innerText = `Error occured: ${error} || Reseting settings... || Please wait for 5 seconds!`
-    
+    re_init();
+}
+
+// Chat sound -------------------------------------------
+
+var sound_switch = document.getElementById("chat-custsound");
+var curr_sound = document.getElementById("chat-notifysound");
+var sound_sel = document.getElementById("chat-notifysoundsel");
+var curr_sel_sound = sound_sel.options[sound_sel.selectedIndex].value;
+
+var norm_sound_div = document.getElementById("non-custsound");
+var cust_sound_div = document.getElementById("cust-sound");
+
+var cust_path_inp = document.getElementById("chat-customsoundin");
+var cust_path_btn = document.getElementById("change_cust-sound");
+
+
+sound_sel.addEventListener("change", function(){
+    curr_sel_sound = sound_sel.options[sound_sel.selectedIndex].value;
+});
+
+
+try {
+    sound_switch.checked = getSubVal("chatsettings", "sound_custom")
+    norm_sound_div.hidden = sound_switch.checked
+    cust_sound_div.hidden = !sound_switch.checked
+
+    curr_sound.innerText = getSubVal("chatsettings", "sound_notify")
+} catch (error) {
+    re_init(error);
+}
+
+function switch_customsound(){
+    setSubVal("chatsettings", "sound_custom", sound_switch.checked)
+    norm_sound_div.hidden = sound_switch.checked
+    cust_sound_div.hidden = !sound_switch.checked
+}
+
+function playselsound(){
+    var audio = document.createElement('audio');
+    audio.style.display = "none";
+    audio.src = "./../static/audio/notifications/" + curr_sel_sound + ".mp3";
+    audio.autoplay = true;
+    audio.onended = function(){
+        audio.remove()
+    };
+    document.body.appendChild(audio);
+}
+
+function applystandsound(){
+    setSubVal("chatsettings", "sound_notify", curr_sel_sound)
+    curr_sound.innerText = curr_sel_sound;
 }

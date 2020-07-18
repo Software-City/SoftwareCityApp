@@ -1,78 +1,152 @@
-body{
-    overflow-y: hidden;
+#custom-sidebar{
+    width: 0px;
 }
-#wrap{
-    padding-left: 2vw;
-    padding-top:5vh;
+#mainpage{
+    margin-left: 0px;
+    width: 100%;
+    overflow-y: auto;
 }
 
-#filewindow{
-    padding-left: 220px;
+#cl-sel{
+    position: absolute;
+    left: 40vw;
 }
+#cl-sel .nav-item{
+    width: 200px;
+    border-style: solid;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: gray;
+    text-align: center;
+}
+
+
+
+
+
+
+hr{
+    background-color: gray;
+}
+a{
+    cursor: pointer;
+}
+
+
+#mdc-drawer a, a:hover{
+    color: white;
+    text-decoration: none;
+}
+#mdc-drawer{
+    position: absolute;
+    padding-left: 20px;
+    padding-top: 20px;
+    width: 200px;
+    border-right: gray;
+    border-right-style: solid;
+    border-width: 1px;
+    height: calc(100% - 80px);
+}
+#drawer-header{
+    height: 60px;
+}
+#drawer{
+    width: 100%;
+    height: calc(100% - 60px);
+    overflow-x: auto;
+    overflow-y: auto;
+}
+#drawer hr{
+    margin-right: 20px;
+}
+
+
+
+
+
 
 .dwn{
-    color: #0070ac;
+    color: #0070ac !important;
 }
-
 .bin{
-    color: #df6603;
+    color: #df6603 !important;
 }
-
 .mv{
-    color: #1e8d02;
+    color: #1e8d02 !important;
 }
-
 .del{
-    color: rgb(187, 0, 0);
+    color: rgb(187, 0, 0) !important;
 }
-
 .rn{
-    color: rgb(255, 214, 80);
+    color: rgb(255, 214, 80) !important;
 }
-
-#progress{
-    width: 50vw;
+.del-dir{
+    margin-top: 5px;
+    float: right;
 }
-
-button:active {
+.mi2{
+    padding-right:5px;
+    font-size: 30px;
+}
+button:focus{
     outline: none;
-    border: none;
+    box-shadow: none;
 }
-    
-button:focus {outline:0;}
-
 .spinning{
     animation-name: spin-animation;
     animation-duration: 1s;
     animation-iteration-count: infinite;
 }
-
 @keyframes spin-animation{
     from{transform: rotate(0deg);}
     to{transform: rotate(359deg);}
 }
 
-.mdc-drawer{
-    float: left;
-    position: fixed;
-}
-#drawer{
-    height: 68vh;
-    overflow-y: scroll;
-    width: 210px;
+
+
+#filewindow{
+    position: absolute;
+    margin-left: 220px;
+    margin-right: 20px;
+    padding-top: 20px;
+    height: calc(100% - 80px);
+    width: calc(100% - 240px);
 }
 #file_part{
-    margin-top: 145px;
-    height: 57vh;
-    overflow-y: scroll;
+    overflow-y: auto;
+    overflow-x: auto;
+    height: calc(100% - 45px);
+    width: 100%;
 }
-#info{
-    position: fixed;
-    padding-top: 90px;
+#wrapperlist{
+    width: 100%;
 }
-.foldersymbol{
-    cursor: default;
+
+
+
+
+.modal-xxl{
+    max-width: 98vw;
+    overflow-y: auto;
 }
-.folderclick{
-    cursor: pointer;
+textarea{
+    height: 65vh !important;
+    width: 100%;
+}
+img{
+    width: 100%;
+}
+video{
+    width: 80%;
+    margin-left: 10vw;
+}
+textarea:disabled{
+    background-color: white;
+    color: black;
+}
+
+.material-icons {
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
 }

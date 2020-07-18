@@ -1,11 +1,14 @@
-var socket;
-
 if(socket===undefined){
-    socket = io("http://software-city.org:8080")
+    var socket = io("http://software-city.org:8080")
     console.log("newconn")
 }else{
     inputtext.disabled = false;
 }
+
+socket.on("error", function(er){
+    alert(er)
+    goback();
+})
 
 socket.on('connect', function(){
     socket.emit('connected', {
@@ -14,6 +17,11 @@ socket.on('connect', function(){
     });
     inputtext.disabled = false;
 });
+
+function disconnect(){
+    socket.close()
+    socket = undefined;
+}
 
 function send(){
     var message = inputtext.value
@@ -50,10 +58,17 @@ function send(){
     
 }
 
+function askformsgs(user){
+    socket.emit("xmit-msgs", user)
+}
+
 socket.on("connection", function(msg){
     console.log(msg)
 });
 
 socket.on('recx', function(msg){
+    notifyer(msg.user, `New message from: ${msg.user}`, msg.message, false)
     sendtoscreen(msg.message, msg.user)
 });
+
+socket.on("recx-msgs", set_chatwin)

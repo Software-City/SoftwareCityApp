@@ -43,7 +43,7 @@ body {
   margin-top:80px;
   margin-left: 10vw;
   min-height: calc(100vh - 80px);
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 .mainpage-expand{
@@ -60,7 +60,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: rgb(102, 102, 102);
