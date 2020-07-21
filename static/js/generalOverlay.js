@@ -8,7 +8,7 @@ var _basicmodal_body = `
                                     </div>
                                     <div class="modal-body" id="body_{{id}}"></div>
                                     <div class="modal-footer" id="footer_{{id}}">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" id="cbtn_{{id}}">Close</button>
                                     </div>
                                 </div>
                             </div>
@@ -35,7 +35,7 @@ var _errormodal_body = `
 class Overlay{
     constructor(wrapper, id, heading, size="normal"){
         this.id = id;
-        document.getElementById(wrapper).innerHTML = _basicmodal_body.replace("{{heading}}", heading).replace("{{id}}", id).replace("{{id}}", id).replace("{{id}}", id).replace("{{id}}", id)
+        document.getElementById(wrapper).innerHTML = _basicmodal_body.replace("{{heading}}", heading).replace("{{id}}", id).replace("{{id}}", id).replace("{{id}}", id).replace("{{id}}", id).replace("{{id}}", id)
         this.wrapper = document.getElementById(id);
         this.wrapper_config = document.getElementById(`config_${id}`);
         this.wrapper_body = document.getElementById(`body_${id}`);
@@ -80,6 +80,10 @@ class Overlay{
     }
     Linebreak(){
         this.wrapper_body.innerHTML += "<br>";
+    }
+
+    disableBTN(bool){
+        document.getElementById(`cbtn_${this.id}`).disabled = bool
     }
     modal(hideorshow){
         switch (hideorshow){

@@ -140,6 +140,18 @@ video{
     width: 80%;
     margin-left: 10vw;
 }
+video:focus{
+    outline: none;
+    box-shadow: none;
+}
+audio{
+    width: 80%;
+    margin-left: 10vw;
+}
+audio:focus{
+    outline: none;
+    box-shadow: none;
+}
 textarea:disabled{
     background-color: white;
     color: black;
@@ -149,4 +161,38 @@ textarea:disabled{
     vertical-align: middle;
     position: relative;
     top: -2px;
+}
+
+.indent{
+    margin-left: 20px;
+}
+
+
+.expl{
+    margin-top: 10px;
+    padding-top: 25px;
+    background-color: gray;
+    border-radius: 15px;
+    width: 100%;
+    min-height: 50vh;
+    max-height: 80vh;
+    overflow-y: auto;
+    list-style-type: none;
+    font-size: 1rem;
+}
+.expl ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.select-folder{
+    padding: 1px;
+    border-radius: 5px;
+}
+.select-folder:hover:not(.on){
+    background-color: var(--secondary);
+}
+.on{
+    background-color: var(--primary);
+    padding: 4px;
 }
