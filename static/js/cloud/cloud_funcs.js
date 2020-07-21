@@ -650,7 +650,7 @@ function editor(btn){
 
     if(textfiles.includes(extension)){
         $.get({
-            url: url + `/${file}`,
+            url: `${url}?path=${path}${file}`,
             dataType: "text",
             success: function(data){wrapp.innerHTML = `<textarea class="p-2 form-control" disabled>${data}</textarea>`; modal.modal()}
         })
@@ -664,7 +664,7 @@ function editor(btn){
         wrapp.innerHTML = `<video src="${url + "/" + file}" controls>Your browser does not support HTML5 Video</video>`
         modal.modal()
     }else if(checkSpecials(specialtexts, file)){
-        $.get({url: url + `/${file}`, success: function(data){wrapp.innerHTML = `<textarea class="p-2 form-control" disabled>${data}</textarea>`; modal.modal()}})
+        $.get({url: `${url}?path=${path}${file}`, success: function(data){wrapp.innerHTML = `<textarea class="p-2 form-control" disabled>${data}</textarea>`; modal.modal()}})
     }else{
         wrapp.innerText = `${file}: Unknown type, can't preview`
         wrapp.innerHTML += `
