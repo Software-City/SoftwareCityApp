@@ -34,3 +34,26 @@ function openinternalbrowser(url){
     tempdata.browserurloverride = url;
     loadpage(this, 'browser.asp')
 }
+
+function playSound(){
+    var audio = document.createElement('audio');
+    audio.style.display = "none";
+    audio.src = `./../static/audio/notifications/${getSubVal("chatsettings", "sound_notify")}.mp3`;
+    audio.autoplay = true;
+    audio.onended = function(){
+        audio.remove()
+    };
+    document.body.appendChild(audio);
+}
+
+function notifyer(user, title, body){
+    var win = require("electron").remote.getCurrentWindow()
+    var {ipcRenderer} = require("electron")
+    if(user!=getVal("credentials")[0] && getSubVal("chatsettings", "notify")){
+        if(!win.isFocused() || CurrPage != "chat.asp"){
+            ipcRenderer.send("notify", title, body)
+        }else{
+            playSound()
+        }
+    }
+}

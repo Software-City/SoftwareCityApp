@@ -1,26 +1,7 @@
-if(socket===undefined){
-    var socket = io("http://software-city.org:8080")
-    console.log("newconn")
+if(socket != undefined){
+    inputtext.disabled = false
 }else{
-    inputtext.disabled = false;
-}
-
-socket.on("error", function(er){
-    alert(er)
-    goback();
-})
-
-socket.on('connect', function(){
-    socket.emit('connected', {
-        data: 'Connected',
-        user: getVal("credentials")[0]
-    });
-    inputtext.disabled = false;
-});
-
-function disconnect(){
-    socket.close()
-    socket = undefined;
+    alert("Socket error; no socket present; try restarting")
 }
 
 function send(){
@@ -61,14 +42,3 @@ function send(){
 function askformsgs(user){
     socket.emit("xmit-msgs", user)
 }
-
-socket.on("connection", function(msg){
-    console.log(msg)
-});
-
-socket.on('recx', function(msg){
-    notifyer(msg.user, `New message from: ${msg.user}`, msg.message, false)
-    sendtoscreen(msg.message, msg.user)
-});
-
-socket.on("recx-msgs", set_chatwin)

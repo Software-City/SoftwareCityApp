@@ -50,12 +50,12 @@ sidebar.hidden = true;
 custom_sidebar.hidden = false;
 
 function goback(){
-    disconnect()
     navbar.hidden = false;
     custom_navbar.hidden = true;
     sidebar.hidden = false;
     custom_sidebar.hidden = true;
-    loadHTML("dash.asp")
+    var elem = document.getElementsByClassName("sidebarclass")
+    loadpage(elem[3], "dash.asp")
 }
 
 function showEmojiSelector(){
@@ -71,35 +71,6 @@ function setConfig(){
     document.documentElement.style.setProperty("--chatconfig-other_textcolor", getSubVal("chatsettings", "other_textcolor"))
 }
 
-
-function playSound(){
-    var audio = document.createElement('audio');
-    audio.style.display = "none";
-    // if(getSubVal("", "")){  }
-    audio.src = `./../static/audio/notifications/${getSubVal("chatsettings", "sound_notify")}.mp3`;
-    audio.autoplay = true;
-    audio.onended = function(){
-        audio.remove()
-    };
-    document.body.appendChild(audio);
-}
-function notifyer(user, title, body, silent, duration="default"){
-    if(user!=getVal("credentials")[0]){
-        playSound()
-        if(!win.isFocused()){
-            let myNotification = new Notification(title, {
-                body: body,
-                silent: silent,
-                icon: "./../static/logos/logo.ico",
-                timeoutType: duration
-            });
-
-            myNotification.onclick = () => {
-                console.log('Notification clicked');
-            }
-        }
-    }
-}
 
 function sendtoscreen(msg, usr){
     if(usr == getVal("credentials")[0]){
@@ -117,6 +88,7 @@ inputtext.addEventListener("keydown", function(ev){
 });
 
 function set_chatwin(msgs){
+    if(CurrPage != "chat.asp"){return}
     if(msgs.user==getVal("credentials")[0]){
         chatarea.innerHTML = ""
         for (x of msgs.li){

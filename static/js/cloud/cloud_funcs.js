@@ -178,7 +178,6 @@ function navigate(to){
     function removeLast(str){
         var sstr = str.split("/")
         sstr.pop()
-        console.log(sstr)
         if(sstr.length <= 1){
             return ""
         }
@@ -341,7 +340,7 @@ function download_file(filename) {
     var btn_pr = document.getElementById("dwn_pr-" + filename);
     btn.classList.add("d-none");
     btn_pr.classList.remove("d-none");
-    downloadURI(`${document.location.href}/${filename}`, filename)
+    downloadURI(`${url}/${filename}`, filename)
     setTimeout(()=>{
         btn.classList.remove("d-none");
         btn_pr.classList.add("d-none");
@@ -624,56 +623,286 @@ function editor(btn){
         return false
     }
 
-    var textfiles = ["txt", "pdf", "py", "css", "js", "html", "asp", "c", "h", "cpp", "hpp", "class", "java", "cfg", "xml", "yml", "json"]
+    // editables
+    var textfiles = ["txt", "py", "css", "js", "asp", "c", "h", "cpp", "cfg", "yml", "json"]
+    var opendocfiles = ["odt"]
+    var xhtmlfiles = ["html", "xml", "xhtml"]
+    var markdownfiles = ["md"]
+
+    // statics
     var imagefiles = ["png", "jpg", "jpeg", "bmp", "gif", "jpeg", "ico", "tiff"]
     var audiofiles = ["mp3", "mp2", "wav", "ogg", "webm"]
     var videofiles = ["mp4", "mov", "flv", "avi"]
-    var specialtexts = ["LICENSE"]
+
+    // other
+    var specialtexts = ["LICENSE", "README"]
+
 
     var file = btn.getAttribute("edit")
     var extension = file.split(".").pop()
-    var modal = new Overlay("overlay-wrapper", "modal1", `Showing: '${file}'`, "modal-xxl")
-    modal.Button("dwnbtn", "Download", "btn-primary").addEventListener("click", function(){
-        downloadURI(url + "/" + file, file)
-    })
-    modal.Custom(`<div id="text-inner" class="p-3"></div>`)
-    var wrapp = document.getElementById("text-inner")
 
-    function showAllAsTxt(){
-        wrapp.innerHTML = `<div class="spinner-border text-primary"></div>`
+    class PreviewModal{
+        constructor(){
+            var Modal = new Overlay("overlay-wrapper", "modal1", `Showing: '${file}'`, "modal-xxl")
+            Modal.Button("dwnbtn", "Download", "btn-primary").addEventListener("click", function(){
+                downloadURI(url + "/" + file, file)
+            })
+            Modal.Custom(`<div id="text-inner" class="p-3"></div>`)
+            this.overlay = Modal
+            this.element = document.getElementById("text-inner")
+        }
+        show(){
+            this.overlay.modal()
+        }
+    }
+    class EditModal{
+        constructor(){
+            var Modal = new Overlay("overlay-wrapper", "modal", `Editing: '${file}'`, "modal-xxl")
+            Modal.Button("dwnbtn", "Download", "btn-primary").addEventListener("click", function(){
+                downloadURI(url + "/" + file, file)
+            })
+            Modal.Custom(`<div id="text-inner"></div>`)
+            this.overlay = Modal
+            this.element = document.getElementById("text-inner")
+        }
+        show(){
+            this.overlay.modal()
+        }
+    }
+
+
+    var editorUrl = `${url}?path=${path}${file}`
+
+
+
+
+    function showText(){
         $.get({
-            url: url + `/${file}`,
+            url: editorUrl,
             dataType: "text",
-            success: function(data){wrapp.innerHTML = `<textarea class="p-2 form-control" disabled>${data}</textarea>`; modal.modal()}
+            success: function(data){
+                var html = 
+                `
+                <textarea class="p-2 form-control" disabled>${data}</textarea>
+                `
+                var md = new PreviewModal()
+                md.element.innerHTML = html
+                md.show()
+            }
         })
+        
+    }
+    function editText(){
+        function save(data){
+            $.get(editorUrl, {
+                save: data
+            }).fail(function(err){
+                console.error(err)
+                new OverlayError("overlay-wrapper", "err", `${err.status}: ${err.statusText} ${err.responseText}`).modal()
+            })
+        }
+        $.get({
+            url: editorUrl,
+            dataType: "text",
+            cache: false,
+            success: function(data){
+                var html = 
+                `
+                <button class="btn btn-warning" id="editm-btn">Save</button>
+                <textarea class="m-2 p-2 form-control" id="editm-area">${data}</textarea>
+                `
+
+                var md = new EditModal()
+                md.element.innerHTML = html
+                md.show()
+
+                var btn = document.getElementById("editm-btn")
+                var area = document.getElementById("editm-area")
+
+                btn.addEventListener("click", ()=>{save(area.value)})
+                // area.addEventListener("change", ()=>{save(area.value)})
+            }
+        })
+    }
+    function editXHTML(){
+        function save(data, frame){
+            $.get(editorUrl, {
+                save: data,
+                success: function(){
+                    frame.contentWindow.location.reload()
+                }
+            }).fail(function(err){
+                console.error(err)
+                new OverlayError("overlay-wrapper", "err", `${err.status}: ${err.statusText} ${err.responseText}`).modal()
+            })
+        }
+        $.get({
+            url: editorUrl,
+            dataType: "text",
+            cache: false,
+            success: function(data){
+                var html = 
+                `
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#view">Preview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#edit">Edit</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active p-2" id="view">
+                        <iframe class="m-2 p-2" id="show-html">loading...</iframe>
+                    </div>
+                    <div class="tab-pane fade p-2" id="edit">
+                        <button class="btn btn-warning" id="editm-btn">Save</button>
+                        <textarea class="m-2 p-2 form-control" id="editm-area">${data}</textarea>
+                    </div>
+                </div>
+                `
+
+                var mod = new EditModal()
+                mod.element.innerHTML = html
+                mod.show()
+
+                var prew = document.getElementById("show-html")
+
+                var btn = document.getElementById("editm-btn")
+                var area = document.getElementById("editm-area")
+
+                prew.src = editorUrl
+
+                btn.addEventListener("click", ()=>{save(area.value, prew)})
+                // area.addEventListener("change", ()=>{save(area.value, prew)})
+            }
+        })
+    }
+    function editMarkdown(){
+        var md = new remarkable.Remarkable({
+            html:         true,
+            xhtmlOut:     false,
+            breaks:       true,
+    
+            typographer:  true,
+    
+            quotes: '“”‘’',
+    
+            highlight: function (/*str, lang*/) { return ''; }
+        })
+        function save(data){
+            $.get(editorUrl, {
+                save: data
+            }).fail(function(err){
+                console.error(err)
+                new OverlayError("overlay-wrapper", "err", `${err.status}: ${err.statusText} ${err.responseText}`).modal()
+            })
+        }
+        $.get({
+            url: editorUrl,
+            dataType: "text",
+            cache: false,
+            success: function(data){
+                var html = 
+                `
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#view">Preview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#edit">Edit</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active p-2" id="view">
+                        <div class="m-2 p-2 md" id="show-md">loading...</div>
+                    </div>
+                    <div class="tab-pane fade p-2" id="edit">
+                        <button class="btn btn-warning" id="editm-btn">Save</button>
+                        <textarea class="m-2 p-2 form-control" id="editm-area">${data}</textarea>
+                    </div>
+                </div>
+                `
+
+                var mod = new EditModal()
+                mod.element.innerHTML = html
+                mod.show()
+
+                var prew = document.getElementById("show-md")
+
+                var btn = document.getElementById("editm-btn")
+                var area = document.getElementById("editm-area")
+
+                prew.innerHTML = md.render(data)
+
+                btn.addEventListener("click", ()=>{save(area.value); prew.innerHTML = md.render(area.value)})
+                // area.addEventListener("change", ()=>{save(area.value); prew.innerHTML = md.render(area.value)})
+            }
+        })
+    }
+    function showImage(){
+        var html =
+        `
+        <img src="${editorUrl}">
+        `
+        var mod = new PreviewModal()
+        mod.element.innerHTML = html
+        mod.show()
+    }
+    function showAudio(){
+        var html =
+        `
+        <audio src="${editorUrl}" controls>Your browser does not support HTML5 Audio</audio>
+        `
+        var mod = new PreviewModal()
+        mod.element.innerHTML = html
+        mod.show()
+    }
+    function showVideo(){
+        var html =
+        `
+        <video src="${editorUrl}" controls>Your browser does not support HTML5 Video</video>
+        `
+        var mod = new PreviewModal()
+        mod.element.innerHTML = html
+        mod.show()
+    }
+    function showOther(){
+        var html =
+        `
+        <div class="container">
+            <p>Unknown file type</p>
+            <p>You can try opening as a <button class="btn btn-warning" id="allsh-btn">Textfile</button></p>
+            <p class="text-warning">Note: Incompatible files may load forever or may crash this tab if opened as a textfile!</p>
+        </div>
+        `
+        var mod = new PreviewModal()
+        mod.element.innerHTML = html
+        document.getElementById("allsh-btn").addEventListener("click", ()=>{
+            mod.overlay.modal("hide")
+            showText()
+        })
+        mod.show()
     }
 
     if(textfiles.includes(extension)){
-        $.get({
-            url: `${url}?path=${path}${file}`,
-            dataType: "text",
-            success: function(data){wrapp.innerHTML = `<textarea class="p-2 form-control" disabled>${data}</textarea>`; modal.modal()}
-        })
+        editText()
+    }else if(opendocfiles.includes(extension)){
+        new OverlayError("overlay-wrapper", "err", `Feature will be added soon...`).modal()
+    }else if(xhtmlfiles.includes(extension)){
+        editXHTML()
+    }else if(markdownfiles.includes(extension)){
+        editMarkdown()
     }else if(imagefiles.includes(extension)){
-        wrapp.innerHTML = `<img src="${url + "/" + file}">`
-        modal.modal()
+        showImage()
     }else if(audiofiles.includes(extension)){
-        wrapp.innerHTML = `<audio src="${url + "/" + file}" controls>Your browser does not support HTML5 Audio</audio>`
-        modal.modal()
+        showAudio()
     }else if(videofiles.includes(extension)){
-        wrapp.innerHTML = `<video src="${url + "/" + file}" controls>Your browser does not support HTML5 Video</video>`
-        modal.modal()
+        showVideo()
     }else if(checkSpecials(specialtexts, file)){
-        $.get({url: `${url}?path=${path}${file}`, success: function(data){wrapp.innerHTML = `<textarea class="p-2 form-control" disabled>${data}</textarea>`; modal.modal()}})
+        showText()
     }else{
-        wrapp.innerText = `${file}: Unknown type, can't preview`
-        wrapp.innerHTML += `
-        <p>
-            <button id="allsh-btn" class="btn btn-warning">Try opening as a fextfile</button> 
-        </p>
-        `
-        document.getElementById("allsh-btn").addEventListener("click", showAllAsTxt)
-        modal.modal()
+        showOther()
     }
 }
 

@@ -14,6 +14,7 @@ var updatecheck = document.getElementById("updatecheck");
 var systrayobj = document.getElementById("systraycheck");
 var devmodecheck = document.getElementById("devmodecheck");
 
+var chat_notify = document.getElementById("chat-notify")
 var chat_sendonreturn = document.getElementById("chat-sendonreturn");
 var chat_colorobjs = document.getElementsByClassName("applychatcolor");
 
@@ -28,6 +29,9 @@ function switchtray(){
 function switchdevmode(){
     setVal("devMode", !getVal("devMode"));
     if(confirm("You have to restart for this to take effect!")){remote.app.relaunch();remote.app.exit()}
+}
+function switchchatnotify(){
+    setSubVal("chatsettings", "notify", !getSubVal("chatsettings", "notify"))
 }
 function switchsendonreturn(){
     setSubVal("chatsettings", "sendonreturn", !getSubVal("chatsettings", "sendonreturn"))
@@ -79,6 +83,7 @@ try {
     systrayobj.checked = getVal("systemtray");
     devmodecheck.checked = getVal("devMode")
 
+    chat_notify.checked = getSubVal("chatsettings", "notify")
     chat_sendonreturn.checked = getSubVal("chatsettings", "sendonreturn")
     for(e of chat_colorobjs){
         e.style.backgroundColor = getSubVal("chatsettings", e.id)
