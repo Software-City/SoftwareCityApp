@@ -2,8 +2,8 @@ var { ipcRenderer } = require("electron")
 var softwareLogo = process.platform === "win32" ? "./../static/logos/logo.ico" : "./../static/logos/logo.png"
 
 if(socket===undefined){
-    // var socket = io("http://software-city.org:8080")
-    var socket = io("http://localhost:8080")
+    var socket = io("http://software-city.org:8080")
+    // var socket = io("http://localhost:8080")
     console.log("newconn")
 }
 
