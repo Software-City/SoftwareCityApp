@@ -23,6 +23,7 @@ var def_config = {
     "cloudstartpage":"MyCloud",
     "devMode": false,
     "chatsettings": {
+        "notify": true,
         "sendonreturn": true,
         "personal_namecolor": "#A74300",
         "personal_textcolor": "#689C1A",

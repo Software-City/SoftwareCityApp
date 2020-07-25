@@ -90,7 +90,6 @@
 </div>
 
 
-<script src="./../static/modules/socket.js"></script>
 <script src="./../static/js/chat/render.js"></script>
 <script src="./../static/js/chat/socket.js"></script>
 <script>

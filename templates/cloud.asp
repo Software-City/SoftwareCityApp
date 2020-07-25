@@ -32,6 +32,7 @@
 
 <div id="cloudwin"></div>
 
+<script src="./../static/modules/remarkable.js"></script>
 <script src="./../static/js/cloud/cloud_funcs.js"></script>
 <script>
     var buts = [document.getElementById("pcloudbtn"),document.getElementById("cloudbtn")];

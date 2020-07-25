@@ -88,6 +88,10 @@
 
   <h3>Chat</h3>
   <div class="custom-control custom-switch">
+    <input type="checkbox" class="custom-control-input" id="chat-notify" onclick="switchchatnotify();">
+    <label class="custom-control-label" for="chat-notify">Notifications</label>
+  </div><br>
+  <div class="custom-control custom-switch">
     <input type="checkbox" class="custom-control-input" id="chat-sendonreturn" onclick="switchsendonreturn();">
     <label class="custom-control-label" for="chat-sendonreturn">Send by pressing "Enter"</label>
   </div>

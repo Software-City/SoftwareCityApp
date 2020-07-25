@@ -59,6 +59,7 @@
     <div id="mainpage" class="mainpage mainpage-norm"></div>
 
     <script>
+      var CurrPage = "dash.asp"
       function loadpage(btn, page){
         var buts = document.getElementsByClassName("sidebarclass");
         for(let e of buts){e.classList.remove("active")}
@@ -68,13 +69,16 @@
           loadHTML(page);
         }
         btn.classList.add("active")
+        CurrPage = page
       }
     </script>
+    <script src="./../static/modules/socket.js"></script>
     <script src="./../settingshandler.js"></script>
     <script src="./../static/js/tools.js"></script>
     <script src="./../renderer/theme.js"></script>
     <script src="./../renderer/pageloader.js"></script>
     <script src="./../static/js/generalOverlay.js"></script>
+    <script src="./../static/js/swc_ss_conn.js"></script>
     <script>
       var start = getVal("defstartpage")
       var elem = document.getElementsByClassName("sidebarclass")
