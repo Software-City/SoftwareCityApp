@@ -48,7 +48,7 @@ function updateURL (event) {
                 if(val.includes(".com") || val.includes(".de") || val.includes(".org") || val.includes(".net") || val.includes(".io")){
                     view.loadURL(`http://${val}`);
                 }else{
-                    view.loadURL(`http://www.google.com/search?q=${val}`);
+                    view.loadURL(`http://www.ecosia.org/search?q=${val.replace(" ", "+")}`);
                 }
             }
         }
