@@ -1,0 +1,40 @@
+<div id="filewindow">
+    <p>Index of <a id="indexof"></a></p>
+    <div id="file_part">
+        <input class="form-control" id="filesearch" type="text" placeholder="Search">
+        <table class="table table-hover" id="filetable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Options</th>
+                    <th>Type</th>
+                    <th>Size</th>
+                </tr>
+            </thead>
+            <tbody id="wrapperlist">
+                
+            </tbody>
+        </table>
+        <br><br>
+    </div>
+
+</div>
+
+
+
+
+<script>
+    $(document).ready(function(){
+        $("#filesearch").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#filetable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+    var url = `https://interface.software-city.org/${settings.account.user.name}/pcloud/mobile`
+    // var url = `http://localhost/${getVal("credentials")[0]}/pcloud/app`
+    var path = "/"
+
+    navigate("main")
+</script>

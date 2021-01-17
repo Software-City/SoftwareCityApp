@@ -1,0 +1,16 @@
+#serverwin{
+    padding-top: 15vh;
+    min-height: 20vh;
+    width: 100%;
+}
+.server-nav{
+    position: fixed;
+    background-color: #222;
+    width: calc(100vw - 16vw);
+}
+.nav-link:hover{
+    cursor: pointer;
+}
+.nav-link.active{
+    border-radius: 0;
+}

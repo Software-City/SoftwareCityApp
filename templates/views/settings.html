@@ -1,0 +1,163 @@
+<link rel="stylesheet" href="../static/css/views/settings.css">
+
+<br>
+<div id="accordion">
+    <div class="card">
+        <div class="card-header" data-toggle="collapse" href="#collapseOne">
+            General
+        </div>
+        <div id="collapseOne" class="collapse" data-parent="#accordion">
+            <div class="card-body">
+                <div class="container">
+                    <div class="form-group">
+                        <label for="startpage-sel">Startpage *</label>
+                        <select class="form-control" id="startpage-sel"></select>
+                    </div>
+
+                    <br><br>
+                    <h5>Notifications *</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-secondary">
+                            Mute All
+                            <label class="checkbox">
+                                <input type="checkbox" id="notify-mute-checkbox" disabled>
+                                <span class="default"></span>
+                            </label>
+                            <ul class="list-group list-group-flush subsetting" id="notify-settings" hidden>
+                                <li class="list-group-item">
+                                    Info
+                                    <label class="checkbox">
+                                        <input type="checkbox" id="notify-info-checkbox">
+                                        <span class="default"></span>
+                                    </label>
+                                </li>
+                                <li class="list-group-item">
+                                    General
+                                    <label class="checkbox">
+                                        <input type="checkbox" id="notify-general-checkbox">
+                                        <span class="default"></span>
+                                    </label>
+                                </li>
+                                <li class="list-group-item">
+                                    Chat
+                                    <label class="checkbox">
+                                        <input type="checkbox" id="notify-chat-checkbox">
+                                        <span class="default"></span>
+                                    </label>
+                                </li>
+                                <li class="list-group-item">
+                                    Important
+                                    <label class="checkbox">
+                                        <input type="checkbox" id="notify-important-checkbox">
+                                        <span class="default"></span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="list-group-item text-secondary">
+                            Update Notification
+                            <label class="checkbox">
+                                <input type="checkbox" id="notify-update-checkbox" disabled>
+                                <span class="default"></span>
+                            </label>
+                        </li>
+                    </ul>
+
+                    <br><br>
+                    <h5>Other</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            Minimize to System Tray *
+                            <label class="checkbox">
+                                <input type="checkbox" id="tray-checkbox">
+                                <span class="default"></span>
+                            </label>
+                        </li>
+                        <li class="list-group-item">
+                            Developer mode
+                            <label class="checkbox">
+                                <input type="checkbox" id="devmode-checkbox">
+                                <span class="default"></span>
+                            </label>
+                            <ul class="list-group list-group-flush subsetting" id="dev-settings">
+                                <li class="list-group-item">
+                                    Updates
+                                    <label class="checkbox">
+                                        <input type="checkbox" id="dev-updates-checkbox">
+                                        <span class="default"></span>
+                                    </label>
+                                </li>
+                                <li class="list-group-item">
+                                    Window Frame
+                                    <label class="checkbox">
+                                        <input type="checkbox" id="dev-frame-checkbox">
+                                        <span class="default"></span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="list-group-item">
+                            Debug mode
+                            <label class="checkbox">
+                                <input type="checkbox" id="debugmode-checkbox">
+                                <span class="default"></span>
+                            </label>
+                        </li>
+                        <li class="list-group-item text-secondary">
+                            Advanced mode
+                            <label class="checkbox">
+                                <input type="checkbox" id="advancedmode-checkbox" disabled>
+                                <span class="default"></span>
+                            </label>
+                        </li>
+                    </ul>
+                    <span><br><br>* Requires Restart</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header collapsed" data-toggle="collapse" href="#collapseTwo">
+            Cloud
+        </div>
+        <div id="collapseTwo" class="collapse" data-parent="#accordion">
+            <div class="card-body">
+                cloud settings coming soon
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header collapsed" data-toggle="collapse" href="#collapseThree">
+            Account
+        </div>
+        <div id="collapseThree" class="collapse" data-parent="#accordion">
+            <div class="card-body">
+                <button onclick="logout()">Log Out</button>
+            </div>
+        </div>
+    </div>
+    <div class="card" id="debug-card" hidden>
+        <div class="card-header collapsed" data-toggle="collapse" href="#collapseFour">
+            Debug
+        </div>
+        <div id="collapseFour" class="collapse" data-parent="#accordion">
+            <div class="card-body">
+                <button onclick="app.showToast('Test toast')">Toast</button> <br>
+                <button onclick="app.showNotification('info', 'test', 'Test info notification')">Notification (Info)</button> <br>
+                <button onclick="app.showNotification('general', 'test', 'Test general notification')">Notification (General)</button> <br>
+                <button onclick="app.showNotification('chat', 'test', 'Test chat notification')">Notification (Chat)</button> <br>
+                <button onclick="app.showNotification('important', 'test', 'Test important notification')">Notification (Important)</button> <br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br><br><h5>Page Settings</h5>
+
+<div>
+    <div class="card">
+        <div class="card-header" onclick="loadHTML('./views/settingsviews/dashboard.html')">Dashboard</div>
+    </div>
+</div>
+
+<script src="../static/js/views/settings.js"></script>

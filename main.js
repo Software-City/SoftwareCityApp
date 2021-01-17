@@ -1,111 +1,178 @@
 const { app, BrowserWindow, Menu, Tray, ipcMain, Notification } = require("electron")
-const {autoUpdater} = require('electron-updater');
-const sethandle = require("./settingshandler.js");
-const menuhandle = require("./renderer/menu.js");
+const { autoUpdater } = require('electron-updater')
 
-sethandle.init_settings()
+const menu_handle = require("./back/menu")
+const auth = require("./back/auth")
+const config = require("./back/config")
+const requests = require("./back/requests")
+const sett_handle = require("./back/settings")
 
-app.allowRendererProcessReuse = true;
+let settings = new sett_handle.Settings()
+require("./back/ipcListeners")()
 
-if(sethandle.getVal("devMode")){
+if(settings.general.developer.enabled){
     app.setAppUserModelId(process.execPath);
 }
 
-var quit = false
-const iswin32 = process.platform === "win32"
+
+app.allowRendererProcessReuse = true
+
 
 let win
 
-function endApp() {
-    function end() {
-        win.webContents.send("ss-endconn")
-        ipcMain.on("ss-ended", ()=>{
-            app.exit(0)
-        })
-    }
-    if(sethandle.getVal("systemtray")){
-        if(!quit){
-            win.hide()
-        }else{
-            end()
-        }
+let closing = false
+function end(force=false){
+    if(force){
+        closing = true
+        app.quit()
     }else{
-        end()
+        win.hide()
     }
 }
 
-function createWindow () {
+async function startMain(){
     if(app.requestSingleInstanceLock()){
-        win = new BrowserWindow({
-            width: 1280,
-            height: 720,
-            minWidth: 1280,
-            minHeight: 720,
-            webPreferences: {
-                nodeIntegration: true,
-                webviewTag: true
-            }
-        });
-
-        menuhandle.buildMenu();
-        win.once('focus', () => win.flashFrame(false))
-        if(iswin32){
-            makeTray("win32");
-            win.setIcon(__dirname + '/static/logos/logo.ico');
-        }else{
-            makeTray("unix");
-            win.setIcon(__dirname + '/static/logos/logo.png')
-        }
-        require("dns").lookup("software-city.org", function(err, addr) {
-            if (err) {
-                win.loadFile('templates/offline.html');
-            } else {
-                require('dns').lookupService(addr, 80, function(err) {
-                if (err) {
-                    win.loadFile('templates/offline.html');
-                } else {
-                    win.loadFile("templates/login.html");
+        let loader = LoadWindow()
+        if(settings.general.update.enabled){
+            if(settings.general.developer.enabled){
+                if(settings.general.developer.updates){
+                    console.log("warning updates are activated in dev-mode! this can cause problems!")
+                    autoUpdater.checkForUpdates().then(()=>{
+                        console.log("update check logged and finished!")
+                    })
                 }
-                });
+            }else{
+                autoUpdater.checkForUpdates().then()
             }
-        });
+        }
 
-        win.on("close", (ev)=>{
-            ev.preventDefault()
-            endApp()
-        })
+        if(await requests.ping("https://api.software-city.org/status")) {
+            if (settings.account.state) {
+                auth.check_login(
+                    settings.account.user.name,
+                    settings.account.user.password
+                ).then(() => {
+                    MainWindow()
+                    loader.close()
+                }).catch((err) => {
+                    if (err.response.status === 401) {
+                        LoginWindow()
+                    } else {
+                        console.log("Critical error! Please contact support.")
+                        end(true)
+                    }
+                    loader.close()
+                })
+            } else {
+                LoginWindow()
+                loader.close()
+            }
+        }else{
+            let err_win = ErrorWindow()
+            err_win.loadFile("./templates/offline.html").then(()=>{
+                loader.close()
+            })
 
-        win.loadFile('templates/pageload.html');
-        try {
-            autoUpdater.checkForUpdates();
-        } catch (error) {
-            alert(error)
         }
     }
 }
-app.whenReady().then(createWindow)
 
+function MainWindow () {
+    win = new BrowserWindow({
+        width: 1280,
+        height: 720,
+        minWidth: 1280,
+        minHeight: 720,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            webviewTag: true,
+        },
+        darkTheme: settings.general.theme.dark,
+        frame: settings.general.developer.framedWindow
+    })
+
+    win.once('focus', () => win.flashFrame(false))
+
+    menu_handle.buildMenu(settings.general.developer.enabled)
+    win.setIcon(config.icon_path)
+
+    win.loadFile("./templates/index.html").then()
+
+    win.on("close", (e)=>{
+        if(!closing){
+            e.preventDefault()
+            end(!settings.general.tray.minimizeOnClose)
+        }
+    })
+    // win.webContents.once("dom-ready", makeTray)
+}
+function LoadWindow(){
+    let load_win = new BrowserWindow({
+        width: 300,
+        height: 350,
+        webPreferences: {nodeIntegration: true},
+        darkTheme: settings.general.theme.dark,
+        frame: false,
+        resizable: false
+    })
+    load_win.setIcon(config.icon_path)
+    load_win.loadFile("./templates/load.html").then()
+    return load_win
+}
+function LoginWindow(){
+    let log_win = new BrowserWindow({
+        width: 300,
+        height: 350,
+        webPreferences: {nodeIntegration: true},
+        darkTheme: settings.general.theme.dark,
+        frame: false,
+        resizable: false
+    })
+    log_win.setIcon(config.icon_path)
+    log_win.loadFile("./templates/login.html").then()
+}
+function ErrorWindow(){
+    let err_win = new BrowserWindow({
+        width: 300,
+        height: 350,
+        webPreferences: {nodeIntegration: true},
+        darkTheme: settings.general.theme.dark,
+        frame: false,
+        resizable: false
+    })
+    err_win.setIcon(config.icon_path)
+    return err_win
+}
+app.whenReady().then(startMain)
+app.once("ready", ()=>{
+    console.log("Initializing", "org.software-city.app.swc_desktopapp")
+    app.setAppUserModelId("org.software-city.app.swc_desktopapp")
+    app.setAsDefaultProtocolClient("swc_desktopapp")
+})
+
+app.on('window-all-closed', () => {
+    app.quit()
+})
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow()
+        MainWindow()
     }
 })
 
-var hidden = false;
-function makeTray(dist){
-    if(dist=="win32"){
-        tray = new Tray(__dirname + '/static/logos/logo.ico')
-    }else{
-        tray = new Tray(__dirname + '/static/logos/logo.png')
-    }
+let tray;
+function makeTray(iconType="default"){
+    tray = new Tray(config.icon_path)
+
     tray.setToolTip('Software City App')
     tray.setContextMenu(Menu.buildFromTemplate([
         {
             label: 'Hide/Show Window',
             click: () => {
-                if(hidden){win.show(); hidden=false;}
-                else{win.hide(); hidden=true;}
+                if(win.hidden){win.show();win.focus();win.hidden=false}
+                else{win.hide();win.hidden=true}
             }
         },
         {
@@ -114,35 +181,43 @@ function makeTray(dist){
         {
             label: 'Exit',
             click: () => {
-                quit = true
-                endApp()
+                end(true)
             }
         }
     ]))
     tray.on('double-click', () => {
+        win.hidden = false
         win.show()
+        win.focus()
     })
 }
+ipcMain.on("ready-tray", makeTray)
+ipcMain.on("end-app", (_, force, restart=false)=>{
+    if(restart){
+        app.relaunch()
+    }
+    end(force)
+})
 
 
+// Single Instance lock
 function openedByUrl(url) {
     if (url) {
-        win.webContents.send('openedByUrl', url);
+        win.webContents.send('openedByUrl', url)
     }
 }
-
 if (app.requestSingleInstanceLock()) {
     app.on('second-instance', (e, argv) => {
-        if (process.platform === 'win32') {
-            openedByUrl(argv.find((arg) => arg.startsWith('swc_desktopapp:')));
+        if (config.platform === 'win32') {
+            openedByUrl(argv.find((arg) => arg.startsWith('swc_desktopapp:')))
         }
         if (win) {
-            if (win.isMinimized()) win.restore();
+            if (win.isMinimized()) win.restore()
             win.show()
             win.focus()
         }
     }
-)};
+)}
 
 if (!app.isDefaultProtocolClient('swc_desktopapp')) {
     app.setAsDefaultProtocolClient('swc_desktopapp');
@@ -152,58 +227,3 @@ if (!app.isDefaultProtocolClient('swc_desktopapp')) {
 //-------------------------------------------------------------------
 // Auto updates
 //-------------------------------------------------------------------
-const sendStatusToWindow = (text) => {
-    if (win) {
-        win.webContents.send('updatemessage', text);
-    }
-};
-
-autoUpdater.on('update-available', info => {
-    if (sethandle.getVal("autoupdate")){
-        win.loadFile('templates/update.html');
-    }else{
-        if(confirm("Do you want to install the latest update?")){
-        win.loadFile('templates/update.html');
-        autoUpdater.downloadUpdate();
-        }
-    }
-});
-autoUpdater.on('error', err => {
-    sendStatusToWindow(["error", `Error in auto-updater: ${err.toString()}`]);
-});
-autoUpdater.on('download-progress', progressObj => {
-    sendStatusToWindow(
-        ["downloading", {"speed": progressObj.bytesPerSecond, "progress": progressObj.percent, "transferred": progressObj.transferred, "total": progressObj.total}]
-    );
-});
-
-autoUpdater.on('update-downloaded', info => {
-    if (sethandle.getVal("autoupdate")){
-        autoUpdater.quitAndInstall();
-    }else{
-        if(confirm("Do you want to install the latest update?")){
-            autoUpdater.quitAndInstall();
-        }else{
-            win.loadFile('templates/login.html');
-        }
-    }
-});
-
-app.requestSingleInstanceLock()
-
-ipcMain.on("notify", (title, body="Click to view")=>{
-    var notification = new Notification({
-        icon: process.platform === "win32" ? "./static/logos/logo.ico" : "./static/logos/logo.png",
-        title: title,
-        body: body
-    })
-    notification.on("click", ()=>{
-        notification.removeAllListeners()
-        if(win.isMinimized()){
-            win.restore()
-        }
-        win.show()
-        win.focus()
-    })
-    notification.show()
-})

@@ -1,0 +1,147 @@
+<style>
+    #partload{
+        margin-left: 46vw;
+        margin-top:20vh;
+    }
+    .green{
+        color: green;
+    }
+    .green:hover{
+        color: lime;
+    }
+    .red{
+        color: rgb(185, 0, 0);
+    }
+    .red:hover{
+        color: rgb(255, 0, 0);
+    }
+</style>
+<div id="partload" class="spinner-border"></div>
+<div class="container" id="infosection" hidden>
+    <h3>General Info <button class="btn" onclick="getdata();">Refresh</button></h3>
+    <p>State: <span id="state"></span></p>
+    <p>Errors: <span id="errors"></span></p>
+    <p>Warnings: <span id="warns"></span></p>
+    <p>Hostname: <span id="host" style="user-select: text;"></span></p>
+    <p>Internet Protocol Adress: <span id="ip" style="user-select: text;"></span></p>
+    <p>Domain: <span id="domain" style="user-select: text;"></span></p>
+    <p>OS: <span id="os"></span></p>
+    <p>OS Version: <span id="version" style="user-select: text;"></span></p>
+    <br>
+    <h3>Services</h3>
+    <p>Secure Shell: <span id="ssh"></span></p>
+    <p>Apache2: <span id="apache2"></span></p>
+    <p>MySQL Database: <span id="mysql"></span></p>
+    <p>SinusBot: <span id="tsbot"></span></p>
+    <br>
+    <h3>Dedicated Servers</h3>
+    <p>Minecraft Proxy: <span id="minecraftproxy"></span></p>
+    <p>Minecraft Servers: <span id="minecraftservers"></span></p>
+    <p>Teamspeak: <span id="teamspeak"></span></p>
+    <p>Garry's Mod: <span id="gmod"></span></p>
+    <br>
+    <h3>Disk Usage</h3>
+    <p>Main SSD: <span id="disk_/"></span></p>
+    <p>Backup HDD: <span id="disk_backup"></span></p>
+    <p>Gameserver HDD: <span id="disk_steam"></span></p>
+    <p>Cloud HDD: <span id="disk_cloud"></span></p>
+    <br>
+    <h3>Different</h3>
+    <p id="Transmission Encoding" class="misc"></p>
+    <p id="Python Path" class="misc"></p>
+    <p id="Python Warnoptions" class="misc"></p>
+    <p id="pp" class="misc"></p>
+    <p id="pp options" class="misc"></p>
+</div>
+<script>
+
+var loader = document.getElementById("partload");
+var info = document.getElementById("infosection");
+
+function resp_render(elem, value, truestate, falsestate){
+    if(value){
+        elem.classList.add("green");
+        resp = truestate;
+    }else{
+        elem.classList.add("red");
+        resp = falsestate;
+    }
+    elem.innerText = resp;
+}
+
+function responder(elem, value){
+    elem.innerText = value;
+}
+
+function getdata(){
+    var state = document.getElementById("state");
+    var errors = document.getElementById("errors");
+    var warns = document.getElementById("warns");
+    var host = document.getElementById("host");
+    var ip = document.getElementById("ip");
+    var domain = document.getElementById("domain");
+    var os = document.getElementById("os");
+    var version = document.getElementById("version");
+
+    var ssh = document.getElementById("ssh");
+    var apache2 = document.getElementById("apache2");
+    var mysql = document.getElementById("mysql");
+    var tsbot = document.getElementById("tsbot");
+
+    var minecraftproxy = document.getElementById("minecraftproxy");
+    var minecraftservers = document.getElementById("minecraftservers");
+    var teamspeak = document.getElementById("teamspeak");
+    var gmod = document.getElementById("gmod");
+
+    var maindisk = document.getElementById("disk_/");
+    var backupdisk = document.getElementById("disk_backup");
+    var steamdisk = document.getElementById("disk_steam");
+    var clouddisk = document.getElementById("disk_cloud");
+
+    loader.hidden = false;
+    info.hidden = true;
+    var request = new XMLHttpRequest();
+    request.responseType = "json";
+    request.open("GET","https://interface.software-city.org/api?mode=apprest&data=get_general");
+    request.addEventListener('load', function(event) {
+    if (request.status >= 200 && request.status < 300) {
+        var resp = request.response;
+
+        resp_render(state, resp.general.online, "online", "offline");
+        responder(errors, resp.general.errors);
+        responder(warns, resp.general.warns);
+        responder(host, resp.general.hostname);
+        responder(ip, resp.general.ip);
+        responder(domain, resp.general.domain);
+        responder(os, resp.general.os);
+        responder(version, resp.general.version);
+        resp_render(ssh, resp.services.ssh, "running", "stopped");
+        resp_render(apache2, resp.services.apache2, "running", "stopped");
+        resp_render(mysql, resp.services.mysql, "running", "stopped");
+        resp_render(tsbot, resp.services.tsbot, "running", "stopped");
+        resp_render(minecraftproxy, resp.servers.minecraftproxy, "online", "offline");
+        resp_render(minecraftservers, resp.servers.minecraftservers, "online", "offline");
+        resp_render(teamspeak, resp.servers.teamspeak, "online", "offline");
+        resp_render(gmod, resp.servers.gmod, "online", "offline");
+        responder(maindisk, resp.diskusage.disk_.usage + "% " + " (" + resp.diskusage.disk_.usedGB + "GB / " + resp.diskusage.disk_.totalGB + "GB)");
+        responder(backupdisk, resp.diskusage.disk_backup.usage + "% " + " (" + resp.diskusage.disk_backup.usedGB + "GB / " + resp.diskusage.disk_backup.totalGB + "GB)");
+        responder(steamdisk, resp.diskusage.disk_steam.usage + "% " + " (" + resp.diskusage.disk_steam.usedGB + "GB / " + resp.diskusage.disk_steam.totalGB + "GB)");
+        responder(clouddisk, resp.diskusage.disk_cloud.usage + "% " + " (" + resp.diskusage.disk_cloud.usedGB + "GB / " + resp.diskusage.disk_cloud.totalGB + "GB)");
+
+        var ob;
+        var misc = document.getElementsByClassName("misc")
+        for(x of misc){
+            ob = x.id
+            responder(x, ob + ": " + resp.misc[ob]);
+        }
+
+    } else {
+        info.innerHTML = "Error getting data";
+    }
+    loader.hidden = true;
+    info.hidden = false;
+    });
+    request.send();
+}getdata();
+
+</script>

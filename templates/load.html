@@ -8,7 +8,6 @@
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
 
     <link rel='stylesheet' href="../static/css/base/base_style.css">
-    <link rel='stylesheet' href="../static/css/base/login_style.css">
     <link rel='stylesheet' href="../static/modules/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
@@ -32,19 +31,11 @@
     </div>
 </div>
 
-<div id="login-main">
-    <h3 class="pt-2">Log In</h3>
-    <span id="info" class="text-danger"></span>
-    <form action="#">
-        <input type="text" id="enter-username" class="fadeIn second" placeholder="Username" name="username" pattern="[A-Za-z_-]{3,}" title="At least 3 alphabetical letters" required>
-        <input type="password" id="password" class="fadeIn third" placeholder="Password" name="password" pattern="[A-Za-z0-9-_+%€/]{6,}" title="At least 6 letters" required>
-        <br> <span class="text-danger fadeIn third" id="error"></span> <br>
-        <input id="login-confirm-button" type="submit" class="fadeIn fourth" value="LOG IN">
-    </form>
+<div id="main">
+    <h3 class="pt-2">loading...</h3>
 </div>
 
 
 <script src="../static/js/base/base_script.js"></script>
-<script src="../static/js/base/login_script.js"></script>
 </body>
 </html>

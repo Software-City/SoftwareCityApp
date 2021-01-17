@@ -1,0 +1,101 @@
+<link rel="stylesheet" href="../static/css/views/cloud.css">
+
+<div id="overlay-wrapper"></div>
+
+
+
+<div class="sidebar mt-5">
+    <div>
+        <h4>Cloud name</h4>
+    </div>
+    <ul class="nav flex-column opt-list">
+        <br><h6>Navigation</h6>
+        <li>
+            <button class="opt-btn" onclick="navigate('back')">
+                <i class="material-icons btn mi2" aria-hidden="true">arrow_back</i>
+                <span class="folderclick">Back</span>
+            </button>
+        </li>
+        <li>
+            <button class="opt-btn" onclick="navigate('main')">
+                <i class="material-icons btn mi2" aria-hidden="true">folder_open</i>
+                <span class="folderclick">Main Cloud</span>
+            </button>
+        </li>
+        <li>
+            <button class="opt-btn" onclick="navigate('trash')">
+                <i class="material-icons btn mi2" aria-hidden="true">delete</i>
+                <span class="folderclick">Trash</span>
+            </button>
+        </li>
+
+        <br><h6>Operations</h6>
+        <li>
+            <button class="opt-btn" onclick="newFile()">
+                <i class="material-icons btn mi2" aria-hidden="true">note_add</i>
+                <span class="folderclick">New File</span>
+            </button>
+        </li>
+        <li>
+            <button class="opt-btn" onclick="newFolder()">
+                <i class="material-icons btn mi2" aria-hidden="true">create_new_folder</i>
+                <span class="folderclick">New Folder</span>
+            </button>
+        </li>
+        <li>
+            <button class="opt-btn" onclick="upload()">
+                <i class="material-icons btn mi2" aria-hidden="true">cloud_upload</i>
+                <span class="folderclick">Upload</span>
+            </button>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column" id="cl-sel">
+        <li class="nav-item">
+            <a class="nav-link cloudswitch" id="pcloudbtn" onclick="loadcloudpage('pcloud.html',this);">My Cloud</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link cloudswitch" id="cloudbtn" onclick="loadcloudpage('cloud.html',this);">Public Cloud</a>
+        </li>
+        <li class="btntop">
+            <button class="btn-nostyle text-warning" onclick="goback();">
+                Back to Dashboard
+            </button>
+        </li>
+    </ul>
+</div>
+
+
+<div id="cloudwin"></div>
+
+<script src="../static/js/modules/remarkable.js"></script>
+<script src="../static/js/modules/Overlay.js"></script>
+<script src="../static/js/views/cloud.js"></script>
+<script>
+    var buts = [document.getElementById("pcloudbtn"),document.getElementById("cloudbtn")];
+    var sidebar = document.getElementById("sidebar")
+
+    sidebar.hidden = true;
+
+    function goback(){
+        sidebar.hidden = false;
+        menu_btns[0].click()
+    }
+
+    function loadcloudpage(page,btn){
+        var pagewin = document.getElementById("cloudwin");
+        $(pagewin).load("./views/cloudviews/" + page);
+        buts.forEach((e)=>{e.classList.remove("active")})
+        btn.classList.add("active")
+    }
+    function loadcloudurl(url,btn){
+        var pagewin = document.getElementById("cloudwin");
+        $(pagewin).load(url);
+        buts.forEach((e)=>{e.classList.remove("active")})
+        btn.classList.add("active")
+    }
+    switch(settings.views.cloud.default){
+        case "MyCloud":loadcloudpage("pcloud.html", document.getElementById("pcloudbtn"));break;
+        case "PublicCloud":loadcloudpage("cloud.html", document.getElementById("cloudbtn"));break;
+        default:loadcloudpage("pcloud.html", document.getElementById("pcloudbtn"));
+    }
+</script>

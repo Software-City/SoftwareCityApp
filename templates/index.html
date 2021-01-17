@@ -1,95 +1,92 @@
-<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
+    <title>SWC App</title>
+
     <meta charset="UTF-8">
-    <title>Software City App</title>
-    <script>let $ = require('jquery');</script>
-    <script>require('popper.js');</script>
-    <script>require('bootstrap');</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-    <section id="settings"></section>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top navbardivclass" id="navbar">
-      <a class="navbar-brand" href="#"><img src="./../static/logos/logo.ico" alt="Logo" style="width:40px;">&nbsp; Software City</a>
-      <div class="collapse navbar-collapse" id="collapsibleNavbar">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link sidebarclass" onclick="loadpage(this, 'browser.asp')">Webbrowser</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link sidebarclass" onclick="loadpage(this, 'profile.asp')">Profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link sidebarclass" onclick="loadpage(this, 'settings.asp')">Settings</a>
-          </li>    
+
+    <link rel='stylesheet' href="../static/css/base/base_style.css">
+    <link rel='stylesheet' href="../static/modules/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <script src="../static/modules/jquery.min.js"></script> <!-- Do not update/replace as it is modified to run in node.js environment! -->
+    <script src="../static/modules/bootstrap/popper.min.js"></script>
+    <script src="../static/modules/bootstrap/bootstrap.min.js"></script>
+
+    <script src="../static/js/modules/Overlay.js"></script>
+    <script src="../static/js/modules/settings.js"></script>
+</head>
+<body>
+<div id="overlay"></div>
+
+<div id="window-frame">
+    <div class="frame-logo"> <img src="../static/logo/512x512.png" alt="logo"> <span>SWC App</span></div>
+    <div class="frame-drag-section"></div>
+    <div class="frame-controls">
+        <div class="frame-btn" onclick="window_minimize()">
+            <img class="icon" src="./../static/logo/frame/min-w-30.png" alt="">
+        </div>
+        <div class="frame-btn norm" onclick="window_maximize()">
+            <img id="win_max" class="icon" src="./../static/logo/frame/max-w-30.png" alt="">
+            <img id="win_res" class="icon" src="./../static/logo/frame/restore-w-30.png" alt="" hidden>
+        </div>
+        <div class="frame-btn close_ico" onclick="window_close()">
+            <img class="icon" src="./../static/logo/frame/close-w-30.png" alt="">
+        </div>
+    </div>
+</div>
+
+<div class="d-inline-flex">
+    <div id="sidebar" class="sidebar">
+        <div class="pl-3 pt-4 position-fixed">
+            <img class="avatar icon round float-left" src="../static/css/loaders/color_loader.gif">
+            <div class="float-left pl-3 text-left">
+                <h6 class="username">loading...</h6>
+            </div>
+        </div>
+        <ul class="nav nav-tabs flex-column opt-list" role="tablist" id="opt-main">
+            <li>
+                <button class="opt-btn menu" data-toggle="tab" onclick="loadPage(this)" data-loc="dashboard">
+                    <i class="material-icons">home</i>
+                    Dashboard
+                </button>
+            </li>
+            <li>
+                <button class="opt-btn menu" data-toggle="tab" onclick="loadPage(this)" data-loc="server">
+                    <i class="material-icons">dns</i>
+                    Server
+                </button>
+            </li>
+            <li>
+                <button class="opt-btn menu" data-toggle="tab" onclick="loadPage(this)" data-loc="cloud">
+                    <i class="material-icons">cloud</i>
+                    Cloud
+                </button>
+            </li>
+            <li class="fixed-bottom btnbottom">
+                <button class="opt-btn" data-toggle="tab" onclick="loadPage(this)" data-loc="settings">
+                    <i class="material-icons">settings</i>
+                    Settings
+                </button>
+            </li>
         </ul>
-      </div>
-    </nav>
-
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top navbardivclass" id="custom-navbar" hidden>
-
-    </nav>
-
-    <div id="sidebar" class="sidebardivclass">
-      <ul class="nav nav-pills flex-column">
-        <li class="nav-item">
-          <a class="nav-link sidebarclass" onclick="loadpage(this, 'dash.asp')">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link sidebarclass" onclick="loadpage(this, 'https://cdn.software-city.org/appcontent/eventpage/events.asp')">Events</a>
-        </li>
-        <li class="nav-item">
-          <!-- <a class="nav-link disabled" onclick="alert('This feature is still WIP');">Chat</a> -->
-          <a class="nav-link sidebarclass" onclick="loadpage(this, 'chat.asp')">Chat</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link sidebarclass" onclick="loadpage(this, 'server.asp')">Servers</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link sidebarclass" onclick="loadpage(this, 'cloud.asp')">Cloud</a>
-        </li>
-      </ul>
     </div>
 
-    <div id="custom-sidebar" class="sidebardivclass" hidden>
+    <div id="main"></div>
+</div>
 
-    </div>
-
-    <div id="mainpage" class="mainpage mainpage-norm"></div>
-
-    <script>
-      var CurrPage = "dash.asp"
-      function loadpage(btn, page){
-        var buts = document.getElementsByClassName("sidebarclass");
-        for(let e of buts){e.classList.remove("active")}
-        if(page.includes("https://")){
-          loadURL(page);
-        }else{
-          loadHTML(page);
+<script src="../static/js/base/base_script.js"></script>
+<script>
+    const menu_btns = document.getElementsByClassName("menu")
+    {
+        for(let btn of menu_btns){
+            if(btn.getAttribute("data-loc") === settings.views.default){
+                btn.click()
+            }
         }
-        btn.classList.add("active")
-        CurrPage = page
-      }
-    </script>
-    <script src="./../static/modules/socket.js"></script>
-    <script src="./../settingshandler.js"></script>
-    <script src="./../static/js/tools.js"></script>
-    <script src="./../renderer/theme.js"></script>
-    <script src="./../renderer/pageloader.js"></script>
-    <script src="./../static/js/generalOverlay.js"></script>
-    <script src="./../static/js/swc_ss_conn.js"></script>
-    <script>
-      var start = getVal("defstartpage")
-      var elem = document.getElementsByClassName("sidebarclass")
-      switch(start){
-        case "Dashboard": loadpage(elem[3], "dash.asp");break;
-        case "Events": loadpage(elem[4], "https://cdn.software-city.org/appcontent/eventpage/events.asp");break;
-        case "Chat": loadpage(elem[5], "chat.asp");break;
-        case "Servers": loadpage(elem[6], "server.asp");break;
-        case "Cloud": loadpage(elem[7], "cloud.asp");break;
-        default: loadpage(elem[3], "dash.asp");
-      }
-    </script>
-  </body>
+    }
+</script>
+</body>
 </html>

@@ -1,0 +1,66 @@
+<style>
+  .spinner{
+        margin-left: 46vw;
+        margin-top:20vh;
+    }
+</style>
+<div id="partload" class="spinner-border spinner"></div>
+<div class="container" id="infosection" hidden>
+    <h3>Minecraft <span class="badge badge-secondary"><span id="online"></span>/<span id="max"></span></span><button class="btn" onclick="getdata();">Refresh</button></h3>
+    <p>Version: <span id="mcversion"></span></p>
+    <table class="table">
+        <thead>
+            <tr>
+            <th>Avatar</th>
+            <th>Nickname</th>
+            </tr>
+        </thead>
+        <tbody id="datasection">
+
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var loader = document.getElementById("partload")
+    var info = document.getElementById("infosection")
+    var data = document.getElementById("datasection")
+    var obj = 
+            `
+            <tr>
+                <td><img src="{{headurl}}" style="width:7%;"></td>
+                <td>{{name}}</td>
+            </tr>
+            `
+    function getdata(){
+        loader.hidden = false;
+        info.hidden = true;
+        var request = new XMLHttpRequest();
+        request.responseType = "json";
+        request.open("GET","https://api.software-city.org/admin/info_mc?general");
+        request.addEventListener('load', function(event) {
+            if (request.status >= 200 && request.status < 300) {
+                if(request.response.state) {
+                    document.getElementById("online").innerText = request.response.players.length;
+                    document.getElementById("max").innerText = request.response.maxplayers;
+                    document.getElementById("mcversion").innerText = request.response.version;
+                }else{
+                    document.getElementById("online").innerText = "";
+                    document.getElementById("max").innerText = "Offline";
+                    document.getElementById("mcversion").innerText = "N/A";
+                }
+                data.innerHTML = "";
+                var id = 1
+                for(x of request.response.players){
+                    data.innerHTML += obj.replace("{{headurl}}", x.headurl).replace("{{name}}", x.name).replace("{{uuid}}", x.uuid).replace("{{id}}", id);
+                    id += 1;
+                }
+            } else {
+                info.innerHTML = "Error getting data";
+            }
+            loader.hidden = true;
+            info.hidden = false;
+        });
+        request.send();
+    }getdata();
+</script>

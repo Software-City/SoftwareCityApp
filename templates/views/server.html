@@ -1,0 +1,36 @@
+<link rel="stylesheet" href="../static/css/views/server.css">
+
+<div id="selector">
+    <ul class="nav nav-pills nav-justified m-2 server-nav">
+        <li class="nav-item">
+            <a class="nav-link" id="tsbtn" onclick="loadserverpage('ts.html',this);">TS</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="mcbtn" onclick="loadserverpage('mc.html',this);">MC</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="gmodbtn" onclick="loadserverpage('gmod.html',this);">GMod</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="generalbtn" onclick="loadserverpage('general.html',this);">more</a>
+        </li>
+    </ul>
+</div>
+<br>
+<div id="serverwin"></div>
+<script>
+    var buts = [document.getElementById("mcbtn"),document.getElementById("tsbtn"),document.getElementById("gmodbtn"),document.getElementById("generalbtn")];
+    function loadserverpage(page,btn){
+        var pagewin = document.getElementById("serverwin");
+        $(pagewin).load("./views/servertemplates/" + page);
+        buts.forEach((e)=>{e.classList.remove("active")})
+        btn.classList.add("active")
+    }
+    function loadserverurl(url,btn){
+        var pagewin = document.getElementById("serverwin");
+        $(pagewin).load(url);
+        buts.forEach((e)=>{e.classList.remove("active")})
+        btn.classList.add("active")
+    }
+    loadserverpage("ts.html", document.getElementById("tsbtn"))
+</script>

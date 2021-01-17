@@ -1,0 +1,99 @@
+<link rel="stylesheet" href="../static/css/views/dashboard.css">
+<link rel="stylesheet" href="../static/css/loaders/transform_loader.css">
+
+<div class="jumbotron text-center bg-pic1 fixed-top" id="welcome-div">
+    <h1>Welcome <span class="username"></span></h1>
+</div>
+  
+
+<div class="container-fluid" id="panels">
+    <div class="row" id="holder">
+
+        <div class="col" id="News">
+            <h3>News</h3>
+            <h4 id="news-header"></h4>
+            <div id="news-body">
+                <div class="l-group"> 
+                    <div class="l-bigSqr">
+                        <div class="l-square l-first"></div>
+                        <div class="l-square l-second"></div>
+                        <div class="l-square l-third"></div>
+                        <div class="l-square l-fourth"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col" id="Joke">
+            <h3>
+                Joke 
+                <small id="joke-voting" hidden>
+                    <i class="material-icons textbutton icon-fix green">arrow_upward</i><res class="textbutton green" id="joke-upvotes">5</res> 
+                    <i class="material-icons textbutton icon-fix red">arrow_downward</i><res class="textbutton red" id="joke-downvotes">0</res>
+                </small>
+            </h3>
+            <div class="joke">
+                <div class="l-group"> 
+                    <div class="l-bigSqr">
+                        <div class="l-square l-first"></div>
+                        <div class="l-square l-second"></div>
+                        <div class="l-square l-third"></div>
+                        <div class="l-square l-fourth"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="joke-controls" class="mt-4 w-100 hold-bottom" hidden>
+                <button onclick="voteJoke('up')" class="material-icons textbutton green">arrow_upward</button>
+                <button onclick="voteJoke('down')" class="material-icons textbutton red">arrow_downward</button>
+                <button onclick="voteJoke()" class="material-icons textbutton blue">arrow_forward</button>
+                <span class="mt-2 mr-3 field-label"><span id="joke-category"></span></span>
+            </div>
+        </div>
+
+        <div class="col" id="Cloud">
+            <h3>Cloud</h3>
+            <label for="cloud-files">STORED FILES</label> <br>
+            <div id="cloud-files">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-animated progress-bar-striped w-100">loading...</div>
+                </div>
+            </div> <br>
+            <label for="cloud-usage">STORAGE USAGE</label> <br>
+            <div id="cloud-usage">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-animated progress-bar-striped w-100">loading...</div>
+                </div>
+            </div> <br>
+            <label for="cloud-usage">USAGE GRAPH</label> <br>
+            <div>
+                <div class="progress">
+                    <div class="progress-bar" id="cloud-usage-bar" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col" id="PP Calc">
+            <h3>PP Calc</h3>
+            <p>
+                <span id="lastpplength"></span>
+            </p>
+        </div>
+
+        <div class="col" id="Messages">
+            <h3>Messages</h3>
+            <p>
+                <span>not implemented</span>
+            </p>
+        </div>
+
+        <div class="col" id="Notifications">
+            <h3>Notifications</h3>
+            <p>
+                <span>not implemented</span>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+<script src="../static/js/views/dashboard.js"></script>

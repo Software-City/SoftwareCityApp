@@ -1,0 +1,78 @@
+<style>
+#partload{
+    margin-left: 46vw;
+    margin-top:20vh;
+}
+</style>
+<div id="partload" class="spinner-border"></div>
+<div class="container" id="infosection" hidden>
+    <h3>GMod <span class="badge badge-secondary"><span id="online"></span>/<span id="max"></span></span><button class="btn" onclick="getdata();">Refresh</button></h3>
+    <table class="table">
+        <thead>
+            <tr>
+            <th>id</th>
+            <th>Nickname</th>
+            </tr>
+        </thead>
+        <tbody id="datasection">
+        </tbody>
+    </table>
+</div>
+<br><br><br><br>
+<hr>
+<div class="container">
+    <h4>Server Info</h4> <br>
+    <p>Gamemode: <span id="gamemode"></span></p>
+    <p>Map: <span id="map"></span></p>
+    <p>Password: <span id="passwd"></span></p>
+    <p>Name: <span id="name"></span></p>
+    <p>Version: <span id="version"></span></p>
+</div>
+
+<script>
+    var loader = document.getElementById("partload")
+    var info = document.getElementById("infosection")
+    var data = document.getElementById("datasection")
+    var obj = 
+              `
+              <tr>
+                <td>{{id}}</td>
+                <td>{{name}}</td>
+              </tr>
+              `
+    function getdata(){
+        var gamemode = document.getElementById("gamemode")
+        var map = document.getElementById("map")
+        var passwd = document.getElementById("passwd")
+        var name = document.getElementById("name")
+        var version = document.getElementById("version")
+
+        loader.hidden = false;
+        info.hidden = true;
+        var request = new XMLHttpRequest();
+        request.responseType = "json";
+        request.open("GET","https://interface.software-city.org/api?mode=apprest&data=get_gmod");
+        request.addEventListener('load', function(event) {
+            if (request.status >= 200 && request.status < 300) {
+                document.getElementById("online").innerText = request.response.player_count;
+                document.getElementById("max").innerText = request.response.max_players;
+                gamemode.innerText = request.response.game;
+                map.innerText = request.response.map;
+                passwd.innerText = (request.response.password_protected == true);
+                name.innerText = request.response.server_name;
+                version.innerText = request.response.version;
+                data.innerHTML = "";
+                var id = 1
+                for(x of request.response.players){
+                    data.innerHTML += obj.replace("{{name}}", x).replace("{{id}}", id);
+                    id += 1;
+                }
+            } else {
+                info.innerHTML = "Error getting data";
+            }
+            loader.hidden = true;
+            info.hidden = false;
+        });
+        request.send();
+    }getdata();
+</script>

@@ -1,67 +1,80 @@
 {
-  "productName": "Software City App",
-  "homepage": "https://software-city.org/",
-  "bugs": {
-    "url": "https://github.com/Davis-Software/SoftwareCityApp/issues",
-    "email": "support@software-city.org"
-  },
-  "author": {
-    "name": "Software City Team",
-    "email": "support@software-city.org",
-    "url": "https://github.com/Davis-Software/SoftwareCityApp"
-  },
-  "name": "softwarecity_app",
-  "version": "0.4.5",
-  "description": "Software City App",
-  "repository": "https://github.com/Davis-Software/SoftwareCityApp",
-  "license": "MIT",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder --x64 --win",
-    "distlinux": "electron-builder --x64 --linux",
-    "publish": "electron-builder --x64 --win -p always",
-    "publishlinux": "electron-builder --x64 --linux -p always"
-  },
-  "devDependencies": {
-    "electron": "^8.4.0",
-    "electron-builder": "^22.7.0"
-  },
-  "dependencies": {
-    "@popperjs/core": "^2.4.4",
-    "bootstrap": "^4.5.0",
-    "electron-updater": "^4.3.1",
-    "jquery": "3.5.1",
-    "popper.js": "^1.14.4"
-  },
-  "build": {
-    "appId": "org.software-city.app.desktopapp",
-    "afterPack": "./afterPackHook.js",
-    "linux": {
-      "target": "AppImage",
-      "icon": "/media/davis/Data/Temporär/dist-resources/265x265.png",
-      "category": "Utility",
-      "publish": {
-        "provider": "github",
-        "publishAutoUpdate": true,
-        "releaseType": "release"
-      }
+    "productName": "SWC App",
+    "homepage": "https://software-city.org/",
+    "bugs": {
+        "url": "https://github.com/Software-City/SoftwareCityApp/issues",
+        "email": "support@software-city.org"
     },
-    "win": {
-      "target": "nsis",
-      "icon": "D:\\Bibliotheken\\Desktop\\Workspace\\SWC\\SWC_desktopapp\\dist-resources\\logo.ico",
-      "publish": {
-        "provider": "github",
-        "publishAutoUpdate": true,
-        "releaseType": "release"
-      }
+    "author": {
+        "name": "Software City Team",
+        "email": "support@software-city.org",
+        "url": "https://projects.software-city.org/projects/electron/swc_desktopapp"
     },
-    "protocols": {
-      "name": "Software City App",
-      "schemes": [
-        "swc_desktopapp"
-      ]
+    "name": "swc_desktopapp",
+    "version": "0.0.1",
+    "description": "Software City App",
+    "repository": "https://projects.software-city.org/projects/electron/swc_desktopapp",
+    "license": "MIT",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder --x64 --win",
+        "distlinux": "electron-builder --x64 --linux",
+        "distmacOS": "electron-builder --x64 --mac",
+        "publish": "electron-builder --x64 --win -p always",
+        "publishlinux": "electron-builder --x64 --linux -p always",
+        "publishmacOS": "electron-builder --x64 --mac -p always"
+    },
+    "devDependencies": {
+        "electron": "^8.5.5",
+        "electron-builder": "^22.5.1"
+    },
+    "dependencies": {
+        "axios": "^0.21.0",
+        "electron-updater": "^4.2.5"
+    },
+    "build": {
+        "appId": "org.software-city.app.swc_desktopapp",
+        "extraFiles": [
+            "TODO",
+            "CHANGELOG.md",
+            "README.md"
+        ],
+        "linux": {
+            "target": "AppImage",
+            "icon": "./static/logo/512x512.png",
+            "category": "Utility",
+            "publish": {
+                "provider": "github",
+                "publishAutoUpdate": true,
+                "releaseType": "release"
+            }
+        },
+        "win": {
+            "target": "nsis",
+            "icon": "./static/logo/512x512.ico",
+            "publish": {
+                "provider": "github",
+                "publishAutoUpdate": true,
+                "releaseType": "release"
+            }
+        },
+        "mac": {
+            "target": "dmg",
+            "icon": "./static/logo/512x512.png",
+            "darkModeSupport": true,
+            "publish": {
+                "provider": "github",
+                "publishAutoUpdate": true,
+                "releaseType": "release"
+            }
+        },
+        "protocols": {
+            "name": "SWC App",
+            "schemes": [
+                "swc_desktopapp"
+            ]
+        }
     }
-  }
 }
